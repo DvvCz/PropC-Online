@@ -12,4 +12,15 @@ Uses [monaco](https://github.com/microsoft/monaco-editor) for the editor, [Block
 * Autocomplete from Parallax Standard Libraries
 
 ## Images
-Todo
+### Autocompletion
+![autocomplete](assets/autocomplete.png)
+
+### Diagnostics
+![diagnostics](assets/diagnostics.png)
+
+### Themes
+![dark](assets/dark.png)
+![light](assets/light.png)
+
+### Console
+![console](assets/console.png)
