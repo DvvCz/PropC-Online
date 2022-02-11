@@ -1,0 +1,8 @@
+textarea {
+	box-sizing: border-box;
+}
+
+div.editor {
+	width: 1650px;
+	height: 600px;
+}

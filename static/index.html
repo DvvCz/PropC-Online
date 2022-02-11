@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+		<title> PropC Editor </title>
+
+		<link rel="stylesheet" href="./styles.css" />
+		<link rel="stylesheet" href="./index.css" />
+	</head>
+	<body>
+		<h1> PropC Online </h1>
+
+		<select name="Theme" id="sl_theme">
+			<option value="vs-dark">Visual Studio Dark</option>
+			<option value="vs">Visual Studio Light</option>
+		</select>
+
+		<select name="Port" id="sl_ports"></select>
+		<select name="Type" id="sl_type">
+			<option value="EEPROM">EEPROM (Saved)</option>
+			<option value="RAM">RAM (Temporary)</option>
+		</select>
+
+		<div class="editor" id="container"></div>
+
+		<div>
+			<textarea id="compile-out" cols="218" rows="10" readonly></textarea>
+		</div>
+
+		<button id="btn_clear">Clear Terminal</button>
+		<button id="btn_download">Send to Robot</button>
+
+		<script type="module" src="index.js"></script>
+	</body>
+</html>
