@@ -5,6 +5,11 @@ export const ta_compile_out = document.getElementById("compile-out") as HTMLText
 export const sl_ports = document.getElementById("sl_ports") as HTMLSelectElement;
 export const sl_type = document.getElementById("sl_type") as HTMLSelectElement;
 
+export function clear() {
+	ta_compile_out.scrollTop = 0;
+	ta_compile_out.value = "";
+}
+
 export function write(msg: string) {
 	ta_compile_out.scrollTop = ta_compile_out.scrollHeight;
 	ta_compile_out.value += msg;
