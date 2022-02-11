@@ -6,15 +6,21 @@ import { compile, BlocklyPropResponse } from './website';
 import { writeLine, clear, btn_clear, btn_download, ta_compile_out, sl_type, write } from './page';
 import { LauncherConnection, DownloadType } from './launcher';
 import { getCompileResults } from './inspector';
+import { loadStandardLibraries, CPPCompletionProvider } from './editor';
 
 let connection: LauncherConnection;
 let current_compile: Promise<BlocklyPropResponse>;
 
-const editor = monaco.editor.create(document.getElementById('container'), {
+// Try and get functions from simpletools.h
+loadStandardLibraries();
+
+const editor = monaco.editor.create(document.getElementById("container"), {
 	value: localStorage.getItem("propc_code") || config.DEFAULT_CODE,
-	language: 'cpp',
-	theme: 'vs-dark'
+	language: "cpp",
+	theme: "vs-dark"
 });
+
+monaco.languages.registerCompletionItemProvider("cpp", CPPCompletionProvider);
 
 let current_timeout: number;
 editor.onDidChangeModelContent(function() {

@@ -9,6 +9,7 @@ Uses [monaco](https://github.com/microsoft/monaco-editor) for the editor, [Block
 * Diagnostics inline in the editor (warnings, errors)
 * Write in raw (Prop)C instead of blocks like with Solo.
 * Everything that monaco brings (Code folding, autocomplete, etc.)
+* Autocomplete from Parallax Standard Libraries
 
 ## Images
 Todo
