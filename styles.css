@@ -1,5 +1,8 @@
-body {
-	width: 800px;
+textarea {
+	box-sizing: border-box;
+}
+
+div.editor {
+	width: 1650px;
 	height: 600px;
-	border: 1px solid #ccc;
 }
