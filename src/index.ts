@@ -11,7 +11,7 @@ let connection: LauncherConnection;
 let current_compile: Promise<BlocklyPropResponse>;
 
 const editor = monaco.editor.create(document.getElementById('container'), {
-	value: config.DEFAULT_CODE,
+	value: localStorage.getItem("propc_code") || config.DEFAULT_CODE,
 	language: 'cpp',
 	theme: 'vs-dark'
 });
@@ -24,22 +24,28 @@ editor.onDidChangeModelContent(function() {
 	}
 	current_timeout = setTimeout(function() {
 		try_compile(editor.getValue(), function(http_success, resp) {
-			if (http_success && !resp.success) {
-				const results = getCompileResults( resp['compiler-error'] ).map(x => {
-					return {
-						startLineNumber: x.line,
-						endLineNumber: x.line,
+			if (http_success) {
+				if (resp.success) {
+					writeLine("Autosaved!");
+					localStorage.setItem("propc_code", editor.getValue());
+				} else {
+					// Extract warnings / errors to display in editor
+					const results = getCompileResults( resp['compiler-error'] ).map(x => {
+						return {
+							startLineNumber: x.line,
+							endLineNumber: x.line,
 
-						startColumn: x.char,
-						endColumn: x.char,
+							startColumn: x.char,
+							endColumn: x.char,
 
-						message: x.msg,
-						severity: x.type == "warning" ? monaco.MarkerSeverity.Warning : monaco.MarkerSeverity.Error
-					}
-				});
+							message: x.msg,
+							severity: x.type == "warning" ? monaco.MarkerSeverity.Warning : monaco.MarkerSeverity.Error
+						}
+					});
 
-				let model = monaco.editor.getModels()[0];
-				monaco.editor.setModelMarkers(model, "owner", results);
+					let model = monaco.editor.getModels()[0];
+					monaco.editor.setModelMarkers(model, "owner", results);
+				}
 			}
 		});
 		console.log("Should compile here!!");
@@ -82,7 +88,7 @@ function try_compile(code: string, ready?: (http_success: boolean, resp: Blockly
 	current_compile
 		.then(resp => {
 			if (resp.success) {
-				write(resp['compiler-output'])
+				writeLine(resp['compiler-output'])
 			} else {
 				writeLine(`Failed: ${resp['compiler-error']}`)
 			}
