@@ -4,9 +4,9 @@ import { PROPC_FDSERIAL_ENDPOINT, PROPC_SIMPLETEXT_ENDPOINT, PROPC_SIMPLETOOLS_E
 const CompletionItemKind = monaco.languages.CompletionItemKind;
 
 const COMMENT_RGX = /\/\*(\*(?!\/)|[^*])*\*\//g;
-const FUNC_RGX = /(extern )?(unsigned )?(int|void|long|char|float) \*?(\w+)\(([^)]*)\)/;
-const VAR_RGX = /(extern )?(unsigned )?(\w+) \*?(\w+);/;
-const DEFINE_RGX = /#define (\w+) (.+)/;
+const FUNC_RGX = /(extern\s+)?(unsigned\s+)?(fdserial|int|void|long|char|float)\s+\*?(\w+)\(([^)]*)\)/;
+const VAR_RGX = /(extern\s+)?(unsigned\s+)?(\w+)\s+\*?(\w+);/;
+const DEFINE_RGX = /#define\s+(\w+)\s+(\S+)/;
 
 let StdLib: any[] = [];
 
