@@ -42,7 +42,7 @@ editor.onDidChangeModelContent(function() {
 							endLineNumber: x.line,
 
 							startColumn: x.char,
-							endColumn: x.char,
+							endColumn: x.end_char,
 
 							message: x.msg,
 							severity: x.type == "warning" ? monaco.MarkerSeverity.Warning : monaco.MarkerSeverity.Error
