@@ -4,7 +4,7 @@ import { PROPC_FDSERIAL_ENDPOINT, PROPC_SIMPLETEXT_ENDPOINT, PROPC_SIMPLETOOLS_E
 const CompletionItemKind = monaco.languages.CompletionItemKind;
 
 const COMMENT_RGX = /\/\*(\*(?!\/)|[^*])*\*\//g;
-const FUNC_RGX = /(extern\s+)?(unsigned\s+)?(fdserial|int|void|long|char|float|terminal)\s+\*?(\w+)\(([^)]*)\)/;
+const FUNC_RGX = /(extern\s+)?(unsigned\s+)?(fdserial|int\d*(?:_t)?|void|long|bool|char|float|terminal)\s+\*?(\w+)\(([^)]*)\)/;
 const VAR_RGX = /(extern\s+)?(unsigned\s+)?(\w+)\s+\*?(\w+);/;
 const DEFINE_RGX = /#define\s+(\w+)\s+(\S+)/;
 
