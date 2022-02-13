@@ -29,6 +29,31 @@ interface LauncherRecv {
 
 export type DownloadType = "RAM"|"EEPROM"
 
+let interval_id: number;
+export let connection: LauncherConnection;
+
+export function startConnecting() {
+	interval_id = setInterval(function() {
+		try {
+			let ctx = new LauncherConnection();
+			ctx.connect()
+				.catch(err => { console.log(err) })
+				.then(ws => {
+					connection = ctx;
+					console.log("Requesting ports");
+					ctx.requestPorts();
+					stopConnecting();
+				});
+		} catch(err) {
+			console.error(`Failed to establish connection with BlocklyPropLauncher (${err}). Retrying...`);
+		}
+	}, 3000);
+}
+
+export function stopConnecting() {
+	clearInterval(interval_id);
+}
+
 interface LauncherSend {
 	type: string,
 	baudrate: number,
@@ -87,7 +112,8 @@ export class LauncherConnection {
 			};
 
 			connection.onclose = function(evt) {
-				console.log(`Socket closed with code: ${evt.code}`);
+				console.log(`Socket closed with code: ${evt.code}. Reconnecting..`);
+				startConnecting();
 			};
 		});
 	}

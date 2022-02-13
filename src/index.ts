@@ -4,11 +4,10 @@ import * as cookie from 'js-cookie';
 import * as config from './config';
 import { compile, BlocklyPropResponse } from './website';
 import { writeLine, clear, btn_clear, btn_download, ta_compile_out, sl_type, write } from './page';
-import { LauncherConnection, DownloadType } from './launcher';
+import { DownloadType, startConnecting, connection } from './launcher';
 import { getCompileResults } from './inspector';
 import { loadStandardLibraries, CPPCompletionProvider } from './editor';
 
-let connection: LauncherConnection;
 let current_compile: Promise<BlocklyPropResponse>;
 
 // Try and get functions from simpletools.h
@@ -132,20 +131,6 @@ btn_download.addEventListener("click", function(evt) {
 	});
 });
 
-const interval_id = setInterval(function() {
-	try {
-		let ctx = new LauncherConnection();
-		ctx.connect()
-			.catch(err => { console.log(err) })
-			.then(ws => {
-				connection = ctx;
-				console.log("Requesting ports");
-				ctx.requestPorts();
-				clearInterval(interval_id);
-			});
-	} catch(err) {
-		console.error(`Failed to establish connection with BlocklyPropLauncher (${err}). Retrying...`);
-	}
-}, 3000);
+startConnecting();
 
 try_compile(editor.getValue());
