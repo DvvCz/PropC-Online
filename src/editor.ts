@@ -1,5 +1,6 @@
 import * as monaco from 'monaco-editor';
 import { PROPC_FDSERIAL_ENDPOINT, PROPC_SIMPLETEXT_ENDPOINT, PROPC_SIMPLETOOLS_ENDPOINT } from './config';
+import { in_intellisense } from './page';
 
 const CompletionItemKind = monaco.languages.CompletionItemKind;
 
@@ -78,6 +79,8 @@ export function loadStandardLibraries() {
 
 export const CPPCompletionProvider = {
 	provideCompletionItems: function (model: monaco.editor.IReadOnlyModel, position: monaco.Position): monaco.languages.CompletionList {
+		if (!in_intellisense.checked) { return null; }
+
 		const textUntilPosition = model.getValueInRange({
 			startLineNumber: 1,
 			startColumn: 1,
@@ -85,34 +88,32 @@ export const CPPCompletionProvider = {
 			endColumn: position.column
 		});
 
-		var match = textUntilPosition.match(
-			/(\w+)\(/
-				);
+		var match = textUntilPosition.match(/(\w+)\(/);
 
-				if (!match) {
-					// @ts-ignore
-					return { suggestions: [] };
-				}
-
-				var word = model.getWordUntilPosition(position);
-
-				// @ts-ignore
-				var range: monaco.Range = {
-					startLineNumber: position.lineNumber,
-					endLineNumber: position.lineNumber,
-					startColumn: word.startColumn,
-					endColumn: word.endColumn
-				};
-
-				console.log("Getting completions...");
-
-				let code = model.getValue();
-
-				let code_defs = getDefinitionsFrom(code);
-
-				let total_defs = StdLib.concat(code_defs);
-				total_defs.forEach( x => x.range = range );
-
-				return { suggestions: total_defs };
-			}
+		if (!match) {
+			// @ts-ignore
+			return { suggestions: [] };
 		}
+
+		var word = model.getWordUntilPosition(position);
+
+		// @ts-ignore
+		var range: monaco.Range = {
+			startLineNumber: position.lineNumber,
+			endLineNumber: position.lineNumber,
+			startColumn: word.startColumn,
+			endColumn: word.endColumn
+		};
+
+		console.log("Getting completions...");
+
+		let code = model.getValue();
+
+		let code_defs = getDefinitionsFrom(code);
+
+		let total_defs = StdLib.concat(code_defs);
+		total_defs.forEach( x => x.range = range );
+
+		return { suggestions: total_defs };
+	}
+};

@@ -5,6 +5,7 @@ export const ta_compile_out = document.getElementById("compile-out") as HTMLText
 export const sl_ports = document.getElementById("sl_ports") as HTMLSelectElement;
 export const sl_type = document.getElementById("sl_type") as HTMLSelectElement;
 export const in_baudrate = document.getElementById("sl_type") as HTMLSelectElement;
+export const in_intellisense = document.getElementById("in_intellisense") as HTMLInputElement;
 
 export function clear() {
 	ta_compile_out.scrollTop = 0;

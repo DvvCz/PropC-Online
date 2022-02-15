@@ -3,15 +3,12 @@ import * as cookie from 'js-cookie';
 
 import * as config from './config';
 import { compile, BlocklyPropResponse } from './website';
-import { writeLine, clear, btn_clear, btn_download, ta_compile_out, sl_type, write } from './page';
+import { writeLine, clear, btn_clear, btn_download, ta_compile_out, sl_type, in_intellisense } from './page';
 import { DownloadType, startConnecting, connection } from './launcher';
 import { getCompileResults } from './inspector';
 import { loadStandardLibraries, CPPCompletionProvider } from './editor';
 
 let current_compile: Promise<BlocklyPropResponse>;
-
-// Try and get functions from simpletools.h
-loadStandardLibraries();
 
 const editor = monaco.editor.create(document.getElementById("container"), {
 	value: localStorage.getItem("propc_code") || config.DEFAULT_CODE,
@@ -53,7 +50,6 @@ editor.onDidChangeModelContent(function() {
 				}
 			}
 		});
-		console.log("Should compile here!!");
 		current_timeout = null;
 	}, config.COMPILE_TYPING_TIMEOUT);
 });
@@ -112,7 +108,7 @@ function try_compile(code: string, ready?: (http_success: boolean, resp: Blockly
 		});
 }
 
-btn_clear.addEventListener('click', function(evt) {
+btn_clear.addEventListener("click", function(evt) {
 	clear();
 });
 
@@ -129,6 +125,13 @@ btn_download.addEventListener("click", function(evt) {
 			}
 		}
 	});
+});
+
+in_intellisense.addEventListener("click", function(evt) {
+	if (in_intellisense.checked) {
+		// Try and get functions from simpletools.h
+		loadStandardLibraries();
+	}
 });
 
 startConnecting();
