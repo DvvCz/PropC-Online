@@ -9,22 +9,33 @@
 		<link rel="stylesheet" href="./index.css" />
 	</head>
 	<body>
-		<h1> PropC Online </h1>
+		<div class="title">
+			PropC Online
+		</div>
 
-		<select name="Theme" id="sl_theme">
-			<option value="vs-dark">Visual Studio Dark</option>
-			<option value="vs">Visual Studio Light</option>
-		</select>
+		<div class="configs">
+			<label for="input_brate">Baudrate</label>
+			<input type="text" id="input_brate" name="input_brate" placeholder="19200">
 
-		<select name="Port" id="sl_ports"></select>
-		<select name="Type" id="sl_type">
-			<option value="EEPROM">EEPROM (Saved)</option>
-			<option value="RAM">RAM (Temporary)</option>
-		</select>
+			<label for="sl_ports">Port</label>
+			<select name="Port" id="sl_ports"></select>
+
+			<label for="sl_theme">Theme</label>
+			<select name="Theme" id="sl_theme">
+				<option value="vs-dark">Visual Studio Dark</option>
+				<option value="vs">Visual Studio Light</option>
+			</select>
+
+			<label for="sl_type">Mode</label>
+			<select name="Type" id="sl_type">
+				<option value="EEPROM">EEPROM (Saved)</option>
+				<option value="RAM">RAM (Temporary)</option>
+			</select>
+		</div>
 
 		<div class="editor" id="container"></div>
 
-		<div>
+		<div class="console">
 			<textarea id="compile-out" cols="218" rows="10" readonly></textarea>
 		</div>
 

@@ -1,8 +1,61 @@
-textarea {
-	box-sizing: border-box;
+.title {
+	background-color: rgb(70, 70, 148);
+	color: white;
+	font-size: larger;
+	text-align: center;
+
+	display: block;
+	overflow: hidden;
+}
+
+div.configs {
+	background-color: rgb(68, 68, 68);
+	padding: 5px;
+}
+
+div.configs.select {
+	color: white;
+	float: right;
+}
+
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	color: white;
+
+	margin: 0;
+	padding: 0;
+	background-color: rgb(34, 34, 34);
+}
+
+button {
+	background-color: rgb(68, 68, 68);
+	color: white;
+	cursor: pointer;
+	font-size: larger;
 }
 
 div.editor {
-	width: 1650px;
-	height: 600px;
+	width: 100%;
+	height: 700px;
+}
+
+div.console {
+	box-sizing: border-box;
+
+	width: 100%;
+	height: 150px;
+}
+
+#compile-out {
+	box-sizing: border-box;
+	color: white;
+	background-color: rgb(54, 54, 54);
+	font-family: 'Courier New', Courier, monospace;
+
+	border: none;
+	resize: none;
+	user-select: none;
+
+	height: 100%;
+	width: 100%;
 }
