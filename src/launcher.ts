@@ -1,4 +1,4 @@
-import { sl_ports, ta_compile_out, write, writeLine } from "./page";
+import { sl_ports, ta_compile_out, write, writeLine, in_baudrate } from "./page";
 
 enum WSAction {
 	Hello = "hello-client",
@@ -93,7 +93,7 @@ export class LauncherConnection {
 				// @ts-ignore
 				const payload: LauncherSend = {
 					type: "hello-browser",
-					// baudrate: 115200 ?
+					baudrate: in_baudrate.value ? Number.parseInt(in_baudrate.value) : 19200
 				};
 
 				connection.send( JSON.stringify(payload) );

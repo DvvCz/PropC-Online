@@ -4,6 +4,7 @@ export const btn_clear = document.getElementById("btn_clear") as HTMLButtonEleme
 export const ta_compile_out = document.getElementById("compile-out") as HTMLTextAreaElement;
 export const sl_ports = document.getElementById("sl_ports") as HTMLSelectElement;
 export const sl_type = document.getElementById("sl_type") as HTMLSelectElement;
+export const in_baudrate = document.getElementById("sl_type") as HTMLSelectElement;
 
 export function clear() {
 	ta_compile_out.scrollTop = 0;
