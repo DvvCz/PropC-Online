@@ -17,7 +17,7 @@
 	"author": "David Cruz",
 	"license": "MIT",
 	"devDependencies": {
-		"@types/js-cookie": "^3.0.1",
+		"@types/file-saver": "^2.0.5",
 		"css-loader": "^6.6.0",
 		"html-webpack-plugin": "^5.5.0",
 		"style-loader": "^3.3.1",
@@ -29,6 +29,7 @@
 	},
 	"dependencies": {
 		"esbuild": "^0.14.20",
+		"file-saver": "^2.0.5",
 		"monaco-editor": "^0.32.1",
 		"monaco-editor-webpack-plugin": "^7.0.1"
 	}

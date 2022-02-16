@@ -1,9 +1,9 @@
 import * as monaco from 'monaco-editor';
-import * as cookie from 'js-cookie';
+import * as FileSaver from 'file-saver';
 
 import { getSetting, changeSetting, COMPILE_TYPING_TIMEOUT } from './config';
 import { compile, BlocklyPropResponse } from './website';
-import { writeLine, clear, btn_clear, btn_download, ta_compile_out, sl_type, in_intellisense } from './page';
+import { writeLine, clear, btn_clear, btn_send, btn_download_bin, ta_compile_out, sl_type, in_intellisense } from './page';
 import { DownloadType, startConnecting, connection } from './launcher';
 import { getCompileResults } from './inspector';
 import { loadStandardLibraries, CPPCompletionProvider } from './editor';
@@ -117,8 +117,8 @@ btn_clear.addEventListener("click", function(evt) {
 	clear();
 });
 
-// 'Download' button
-btn_download.addEventListener("click", function(evt) {
+// 'Send to Robot' button
+btn_send.addEventListener("click", function(evt) {
 	try_compile(editor.getValue(), function(http_success, resp) {
 		if (http_success && resp.success) {
 			if (connection) {
@@ -128,6 +128,16 @@ btn_download.addEventListener("click", function(evt) {
 			} else {
 				writeLine("Download: Failed, no connection established with BlocklyPropLauncher");
 			}
+		}
+	});
+});
+
+// 'Download Binary' button
+btn_download_bin.addEventListener("click", function(evt) {
+	try_compile(editor.getValue(), function(http_success, resp) {
+		if (http_success && resp.success) {
+			let blob = new Blob([resp.binary], {type: "application/octet-stream"});
+			FileSaver.saveAs(blob, `propc${resp.extension}`);
 		}
 	});
 });

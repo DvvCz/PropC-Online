@@ -1,5 +1,5 @@
 .title {
-	background-color: rgb(70, 70, 148);
+	background-color: #4f6ec5;
 	color: white;
 	font-size: larger;
 	text-align: center;
@@ -9,7 +9,7 @@
 }
 
 div.configs {
-	background-color: rgb(68, 68, 68);
+	background-color: rgb(74, 74, 74);
 	padding: 5px;
 }
 
@@ -24,15 +24,9 @@ body {
 
 	margin: 0;
 	padding: 0;
-	background-color: rgb(34, 34, 34);
+	background-color: rgb(38, 38, 38);
 }
 
-button {
-	background-color: rgb(68, 68, 68);
-	color: white;
-	cursor: pointer;
-	font-size: larger;
-}
 
 div.editor {
 	width: 100%;
@@ -58,4 +52,54 @@ div.console {
 
 	height: 100%;
 	width: 100%;
+}
+
+/*
+	Button CSS by Algolia
+	https://getcssscan.com/css-buttons-examples
+*/
+
+button {
+	align-items: center;
+	appearance: none;
+	background-color: #4f6ec5;
+	border-radius: 4px;
+	border-width: 0;
+	box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+	box-sizing: border-box;
+	color: #f0f0f0;
+	cursor: pointer;
+	display: inline-flex;
+	font-family: "JetBrains Mono",monospace;
+	height: 34px;
+	justify-content: center;
+	line-height: 1;
+	list-style: none;
+	overflow: hidden;
+	padding-left: 16px;
+	padding-right: 16px;
+	position: relative;
+	text-align: left;
+	text-decoration: none;
+	transition: box-shadow .15s,transform .15s;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+	white-space: nowrap;
+	will-change: box-shadow,transform;
+	font-size: 18px;
+}
+
+button:focus {
+	box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+}
+
+button:hover {
+	box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+	transform: translateY(-2px);
+}
+
+button:active {
+	box-shadow: #D6D6E7 0 3px 7px inset;
+	transform: translateY(2px);
 }
