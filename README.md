@@ -10,6 +10,7 @@ Uses [monaco](https://github.com/microsoft/monaco-editor) for the editor, [Block
 * Write in raw (Prop)C instead of blocks like with Solo.
 * Everything that monaco brings (Code folding, autocomplete, etc.)
 * Autocomplete from Parallax Standard Libraries
+* Save data from sessions (your code, baudrate, general configs..)
 
 ## Images
 ### Autocompletion

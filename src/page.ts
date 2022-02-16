@@ -24,7 +24,5 @@ export function writeLine(msg: string) {
 	ta_compile_out.value += (msg + "\r\n");
 }
 
-console.log(`Test ${ USER_SETTINGS.intellisense }, ${ USER_SETTINGS.baudrate }, ${ getSetting("baudrate") }`);
-
 in_intellisense.checked = getSetting("intellisense");
 in_baudrate.value = getSetting("baudrate");
