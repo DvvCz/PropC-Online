@@ -33,3 +33,6 @@ int main() {
 // How many milliseconds to wait until the user stops typing to automatically compile.
 // Should be pretty high to avoid a ton of requests to compile.
 export const COMPILE_TYPING_TIMEOUT = 900;
+
+// Milliseconds in between each attempt to connect to the BlocklyPropLauncher.
+export const LAUNCHER_CONNECT_COOLDOWN = 3000;

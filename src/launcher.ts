@@ -1,4 +1,5 @@
 import { sl_ports, ta_compile_out, write, writeLine, in_baudrate } from "./page";
+import { LAUNCHER_CONNECT_COOLDOWN } from './config';
 
 enum WSAction {
 	Hello = "hello-client",
@@ -33,11 +34,14 @@ let interval_id: number;
 export let connection: LauncherConnection;
 
 export function startConnecting() {
+	stopConnecting();
 	interval_id = setInterval(function() {
 		try {
 			let ctx = new LauncherConnection();
 			ctx.connect()
-				.catch(err => { console.log(err) })
+				.catch(err => {
+					console.error(`Error when connecting to BlocklyPropLauncher ${err}`);
+				})
 				.then(ws => {
 					connection = ctx;
 					console.log("Requesting ports");
@@ -47,7 +51,7 @@ export function startConnecting() {
 		} catch(err) {
 			console.error(`Failed to establish connection with BlocklyPropLauncher (${err}). Retrying...`);
 		}
-	}, 3000);
+	}, LAUNCHER_CONNECT_COOLDOWN);
 }
 
 export function stopConnecting() {
@@ -102,7 +106,7 @@ export class LauncherConnection {
 			};
 
 			connection.onerror = function(error) {
-				console.error(`WebSocket error: ${error}`);
+				console.error(`WebSocket error: ${error.toString()}`);
 				self.close();
 			};
 
@@ -111,8 +115,29 @@ export class LauncherConnection {
 				self.onMsg(msg);
 			};
 
-			connection.onclose = function(evt) {
-				console.log(`Socket closed with code: ${evt.code}. Reconnecting..`);
+			connection.onclose = function(evt: CloseEvent) {
+				if (evt.reason) {
+					console.log(`Socket closed with reason: '${evt.reason}' [${evt.code}] Reconnecting in ${ LAUNCHER_CONNECT_COOLDOWN / 1000 } seconds..`);
+				} else {
+					// This is awful. Can you seriously not index dictionaries with number keys?
+					let reason;
+					switch (evt.code) {
+						case 1000: reason = "Normal closure"; break
+						case 1001: reason = "Going away"; break
+						case 1002: reason = "Protocol error"; break
+						case 1003: reason = "Unsupported data"; break
+						case 1004: reason = "Reserved"; break
+						case 1005: reason = "No status received"; break
+						case 1006: reason = "Abnormal closure"; break
+						case 1007: reason = "Invalid data"; break
+						case 1008: reason = "Policy violation"; break
+						case 1009: reason = "Message too big"; break
+						case 1010: reason = "Mandatory extension"; break
+						case 1011: reason = "Internal server error"; break
+						default: reason = "Unknown reason";
+					}
+					console.log(`Socket closed: '${reason}' [${evt.code}] Reconnecting in ${ LAUNCHER_CONNECT_COOLDOWN / 1000 } seconds..`)
+				}
 				startConnecting();
 			};
 		});
