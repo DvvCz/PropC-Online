@@ -1,7 +1,7 @@
 import * as monaco from 'monaco-editor';
 import * as cookie from 'js-cookie';
 
-import * as config from './config';
+import { getSetting, changeSetting, COMPILE_TYPING_TIMEOUT } from './config';
 import { compile, BlocklyPropResponse } from './website';
 import { writeLine, clear, btn_clear, btn_download, ta_compile_out, sl_type, in_intellisense } from './page';
 import { DownloadType, startConnecting, connection } from './launcher';
@@ -11,9 +11,9 @@ import { loadStandardLibraries, CPPCompletionProvider } from './editor';
 let current_compile: Promise<BlocklyPropResponse>;
 
 const editor = monaco.editor.create(document.getElementById("container"), {
-	value: localStorage.getItem("propc_code") || config.DEFAULT_CODE,
+	value: getSetting("code"),
 	language: "cpp",
-	theme: "vs-dark"
+	theme: getSetting("theme")
 });
 
 monaco.languages.registerCompletionItemProvider("cpp", CPPCompletionProvider);
@@ -29,7 +29,7 @@ editor.onDidChangeModelContent(function() {
 			if (http_success) {
 				if (resp.success) {
 					writeLine("Autosaved!");
-					localStorage.setItem("propc_code", editor.getValue());
+					changeSetting("code", editor.getValue());
 				} else {
 					// Extract warnings / errors to display in editor
 					const results = getCompileResults( resp['compiler-error'] ).map(x => {
@@ -51,14 +51,19 @@ editor.onDidChangeModelContent(function() {
 			}
 		});
 		current_timeout = null;
-	}, config.COMPILE_TYPING_TIMEOUT);
+	}, COMPILE_TYPING_TIMEOUT);
 });
 
 const theme_selection = document.getElementById("sl_theme") as HTMLSelectElement;
-theme_selection.addEventListener('change', function(evt) {
-	// @ts-ignore
-	monaco.editor.setTheme(evt.target.value);
+theme_selection.addEventListener("change", function(evt: Event) {
+	//@ts-ignore
+	let theme: string = evt.target.value;
+	monaco.editor.setTheme(theme);
+
+	changeSetting("theme", theme);
 });
+
+monaco.editor.setTheme(getSetting("theme"));
 
 let current_compile_timeout: number;
 
@@ -132,6 +137,12 @@ in_intellisense.addEventListener("click", function(evt) {
 		// Try and get functions from simpletools.h
 		loadStandardLibraries();
 	}
+	changeSetting("intellisense", in_intellisense.checked);
+});
+
+sl_type.selectedIndex = getSetting("download_type") as number;
+sl_type.addEventListener("change", function(evt) {
+	changeSetting("download_type", sl_type.selectedIndex);
 });
 
 startConnecting();

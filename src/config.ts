@@ -36,3 +36,32 @@ export const COMPILE_TYPING_TIMEOUT = 900;
 
 // Milliseconds in between each attempt to connect to the BlocklyPropLauncher.
 export const LAUNCHER_CONNECT_COOLDOWN = 3000;
+
+export const USER_SETTINGS = JSON.parse(localStorage.getItem("propc_settings")) || {
+	theme: "vs-dark",
+	code: DEFAULT_CODE,
+	intellisense: true,
+	baudrate: 19200,
+
+	selectedIndex: 0, // EEPROM (Saved) By default
+};
+
+let settings_changed = false;
+export function changeSetting(name: string, value: any) {
+	if (USER_SETTINGS[name] !== value) {
+		USER_SETTINGS[name] = value;
+		settings_changed = true;
+	}
+}
+
+export function getSetting(name: string) {
+	return USER_SETTINGS[name];
+}
+
+setInterval(function() {
+	if (settings_changed) {
+		console.log(`Saving settings to localStorage.`);
+		localStorage.setItem("propc_settings", JSON.stringify(USER_SETTINGS));
+		settings_changed = false;
+	}
+}, 1000)
