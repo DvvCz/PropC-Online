@@ -1,5 +1,5 @@
 import { sl_ports, ta_compile_out, write, writeLine, in_baudrate } from "./page";
-import { LAUNCHER_CONNECT_COOLDOWN } from './config';
+import { LAUNCHER_CONNECT_COOLDOWN } from "./config";
 
 enum WSAction {
 	Hello = "hello-client",
