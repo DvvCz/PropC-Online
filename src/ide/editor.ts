@@ -37,12 +37,15 @@ editor.onDidChangeModelContent(function() {
 		clearTimeout(current_timeout);
 	}
 	current_timeout = setTimeout(function() {
+		// Autosave even if it didn't compile correctly.
+		setSource(current_file, editor.getValue());
+		saveSources();
+		writeLine("Autosaved!");
+
 		tryCompile(function(http_success, resp) {
 			if (http_success) {
 				if (resp.success) {
-					writeLine("Autosaved!");
-					setSource( current_file, editor.getValue() );
-					saveSources();
+					writeLine("Compiled!");
 				} else {
 					// Extract warnings / errors to display in editor
 					const results = getCompileResults( resp['compiler-error'] ).map(x => {
