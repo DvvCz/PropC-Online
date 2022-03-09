@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor';
-import { PROPC_FDSERIAL_ENDPOINT, PROPC_SIMPLETEXT_ENDPOINT, PROPC_SIMPLETOOLS_ENDPOINT } from './config';
-import { in_intellisense } from './page';
+import { PROPC_FDSERIAL_ENDPOINT, PROPC_SIMPLETEXT_ENDPOINT, PROPC_SIMPLETOOLS_ENDPOINT } from '../site/config';
+import { in_intellisense } from '../site/page';
+import { getSource, tabs } from '../site/tabhandler';
 
 const CompletionItemKind = monaco.languages.CompletionItemKind;
 
@@ -109,11 +110,16 @@ export const CPPCompletionProvider = {
 
 		let code = model.getValue();
 
-		let code_defs = getDefinitionsFrom(code);
+		//let code_defs = getDefinitionsFrom(code);
+		let defs = StdLib;
 
-		let total_defs = StdLib.concat(code_defs);
-		total_defs.forEach( x => x.range = range );
+		for (let name in tabs) {
+			let code = getSource(name);
+			defs = defs.concat( getDefinitionsFrom(code) );
+		}
 
-		return { suggestions: total_defs };
+		defs.forEach( x => x.range = range );
+
+		return { suggestions: defs };
 	}
 };

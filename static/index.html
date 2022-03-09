@@ -36,7 +36,9 @@
 			<input type="checkbox" value="Intellisense" id="in_intellisense"/>
 		</div>
 
-		<div class="ide-tabs" id="ide-tabs"></div>
+		<div class="ide-tabs" id="ide-tabs">
+			<button id="btn_add_tab">+</button>
+		</div>
 
 		<div class="editor" id="container"></div>
 
@@ -44,9 +46,11 @@
 			<textarea id="compile-out" cols="218" rows="10" readonly></textarea>
 		</div>
 
-		<button id="btn_clear">Clear Terminal</button>
-		<button id="btn_send">Send to Robot</button>
-		<button id="btn_download_bin">Download Binary</button>
+		<div class="controls">
+			<button id="btn_clear">Clear Terminal</button>
+			<button id="btn_send">Send to Robot</button>
+			<button id="btn_download_bin">Download Binary</button>
+		</div>
 
 		<script type="module" src="index.js"></script>
 	</body>
