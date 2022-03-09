@@ -41,15 +41,13 @@ const DEFAULT_SETTINGS = {
 	theme: "vs-dark",
 
 	code: DEFAULT_CODE,
-	sources: new Map(),
+	sources: { ["main.c"]: DEFAULT_CODE },
 
 	intellisense: true,
 	baudrate: 19200,
 
 	selectedIndex: 0, // EEPROM (Saved) By default
 };
-
-DEFAULT_SETTINGS.sources.set("main.c", DEFAULT_CODE);
 
 export let USER_SETTINGS = JSON.parse(localStorage.getItem("propc_settings"));
 
