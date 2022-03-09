@@ -38,7 +38,6 @@ editor.onDidChangeModelContent(function() {
 	}
 	current_timeout = setTimeout(function() {
 		// Autosave even if it didn't compile correctly.
-		alert("Autosaving", current_file);
 		setSource(current_file, editor.getValue());
 		saveSources();
 		writeLine("Autosaved!");
