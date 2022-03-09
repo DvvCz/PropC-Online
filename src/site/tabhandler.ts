@@ -95,7 +95,6 @@ export function addTab(name: string) {
 
 export function setupTabs() {
 	let tabs = getSetting("tabs");
-	console.log("TABS, ", tabs);
 
 	if (tabs && tabs["main.c"]) {
 		for (let name in tabs) {

@@ -4,8 +4,8 @@ import { startIDE } from './ide/editor';
 import { tryCompile } from './ide/source';
 
 setupTabs();
-// startIDE();
-// setTab("main.c");
+startIDE();
+//setTab("main.c");
 startConnecting();
 
 tryCompile();
