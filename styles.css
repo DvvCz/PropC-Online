@@ -20,23 +20,35 @@ div.configs.select {
 
 div.ide-tabs {
 	overflow: hidden;
-	border: 1px solid #ccc;
-	background-color: #f1f1f1;
+	background-color: inherit;
+	height: 30px;
+
+	user-select: none;
 }
 
-div.ide-tabs.button {
+div.ide-tabs button {
 	background-color: inherit;
 	float: left;
-	border: none;
-	outline: none;
-	cursor: pointer;
-	padding: 14px 16px;
-	transition: 0.3s;
-	font-size: 17px;
+
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	text-align: center;
+	font-style: bold;
+
+	border: 3px black;
+	height: 30px;
+	width: fit-content;
+	color: white;
+	margin-left: 5px;
+
+	background-color: #3d3d3f;
 }
 
-div.ide-tabs.button.active {
-	background-color: #ccc;
+div.ide-tabs button:hover {
+	background-color: #59595c;
+}
+
+div.ide-tabs button:active {
+	background-color: #6c6c70;
 }
 
 body {
@@ -51,7 +63,7 @@ body {
 
 div.editor {
 	width: 100%;
-	height: 700px;
+	height: 680px;
 }
 
 div.console {
@@ -61,11 +73,14 @@ div.console {
 	height: 150px;
 }
 
-#compile-out {
+div.console textarea {
 	box-sizing: border-box;
 	color: white;
 	background-color: rgb(54, 54, 54);
 	font-family: 'Courier New', Courier, monospace;
+
+	box-shadow: none;
+	outline: none;
 
 	border: none;
 	resize: none;
@@ -75,12 +90,23 @@ div.console {
 	width: 100%;
 }
 
+.contextmenu {
+	background-color: #3d3d3f;
+	color: white;
+
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+	font-size: 13px;
+	outline: 0;
+	padding: 5px 0;
+}
+
 /*
 	Button CSS by Algolia
 	https://getcssscan.com/css-buttons-examples
 */
 
-button {
+div.controls button {
 	align-items: center;
 	appearance: none;
 	background-color: #4f6ec5;
@@ -111,16 +137,16 @@ button {
 	font-size: 18px;
 }
 
-button:focus {
+div.controls button:focus {
 	box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
 }
 
-button:hover {
+div.controls button:hover {
 	box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
 	transform: translateY(-2px);
 }
 
-button:active {
+div.controls button:active {
 	box-shadow: #D6D6E7 0 3px 7px inset;
 	transform: translateY(2px);
 }
