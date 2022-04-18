@@ -14,34 +14,49 @@ import { editor } from './editor';
 let current_compile: Promise<BlocklyPropResponse>;
 let current_compile_timeout: number;
 
-// Replaces all instances of #include "tab.c" with the code from the tab.
-function getPreprocessed(filename: string, included?: Record<string, boolean>) {
-	if (!included) included = {};
+const INCLUDE_RGX = /#include\s*"([^"]+)"/g;
+const NL = /\n/g;
 
-	let code = getSource(filename);
-	included[filename] = true;
-	for (let name in tabs) {
-		if (name === filename) { continue }
+/**
+ * Get line numbers of each call to #include
+ */
+function getIncludeLines(code: string): Record<string, number> {
+	let record: Record<string, number> = {};
+	let match;
+	while ((match = INCLUDE_RGX.exec(code)) !== null) {
+		const filename = match[1];
+		const before = code.substring(1, match.index);
+		const line = (before.match(NL) || []).length;
 
-		const rgx = new RegExp(`#include\\s*\"${name}\"`, "g");
-		console.log(name, rgx);
-		if (included[name]) {
-			// This is already included, so don't include it again (to avoid infinite recursion)
-			code = code.replace(rgx, "");
-		} else {
-			included[name] = true;
-
-			let tab_code = getPreprocessed(name, included);
-			code = code.replace(rgx, tab_code);
-		}
+		record[filename] = line;
 	}
 
-	return code;
+	return record;
+}
+
+// Replaces all instances of #include "tab.c" with the code from the tab.
+function getPreprocessed(mainfile: string, included: Record<string, boolean> = {}): string {
+	let code = getSource(mainfile);
+	included[mainfile] = true;
+
+	const lines = getIncludeLines(code);
+
+	return code.replaceAll(INCLUDE_RGX, function(substr, filename) {
+		// Already included, ignore.
+		if (included[filename]) return "";
+		if (!getSource(filename)) return substr; // File not found, regular C include?
+
+		return `
+			#line 1 "${filename}"
+			${ getPreprocessed(filename, included) }
+			#line ${ lines[filename] } "${mainfile}"
+		`;
+	});
 }
 
 export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResponse) => void) {
 	ready = ready || function() {};
-	let code = getPreprocessed("main.c");
+	const code = getPreprocessed("main.c");
 	console.log("Compiling:", code);
 
 	if (current_compile) {
