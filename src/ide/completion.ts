@@ -1,6 +1,6 @@
 import * as monaco from 'monaco-editor';
 import { PROPC_FDSERIAL_ENDPOINT, PROPC_SIMPLETEXT_ENDPOINT, PROPC_SIMPLETOOLS_ENDPOINT } from '../site/config';
-import { in_intellisense } from '../site/page';
+import { in_intellisense, writeLine } from '../site/page';
 import { getSource, tabs } from '../site/tabhandler';
 
 const CompletionItemKind = monaco.languages.CompletionItemKind;
@@ -9,8 +9,6 @@ const COMMENT_RGX = /\/\*(\*(?!\/)|[^*])*\*\//g;
 const FUNC_RGX = /(extern\s+)?(unsigned\s+)?(fdserial|int\d*(?:_t)?|void|long|bool|char|float|terminal)\s+\*?(\w+)\(([^)]*)\)/;
 const VAR_RGX = /(extern\s+)?(unsigned\s+)?(\w+)\s+\*?(\w+);/;
 const DEFINE_RGX = /#define\s+(\w+)\s+(\S+)/;
-
-let StdLib: any[] = [];
 
 function createLibObject(name: string, kind: monaco.languages.CompletionItemKind, desc: string): monaco.languages.CompletionItem {
 	return {
@@ -54,17 +52,32 @@ function getDefinitionsFrom(code: string): monaco.languages.CompletionItem[] {
 	return out;
 }
 
+const Definitions: Record<string, monaco.languages.CompletionItem[]> = {};
+
+const INCLUDEHEADER_RGX = /#include\s+"([^"]+.h)"/;
+
+function scanHeaderIncludes(code: string, callback: (header: string)=>void) {
+	const lines = code.split("\n");
+	for (const line of lines) {
+		const inc = line.match(INCLUDEHEADER_RGX);
+		if (inc) {
+			callback(inc[1]);
+		}
+	}
+}
+
 /// Load C++ / C definitions from a raw url to text.
 /// It will do it's best to scan for functions and #defines and throw them at monaco for autocomplete.
 function loadDefinitionsFrom(endpoint: string) {
+	const filename = endpoint.split("/").pop();
 	fetch(endpoint, {
 		method: "GET"
 	})
 	.then(res => {
 		res.text()
 		.then(txt => {
-			let defs = getDefinitionsFrom(txt);
-			StdLib = StdLib.concat(defs);
+			const defs = getDefinitionsFrom(txt);
+			Definitions[filename] = defs;
 		});
 	})
 	.catch(() => {
@@ -89,17 +102,17 @@ export const CPPCompletionProvider = {
 			endColumn: position.column
 		});
 
-		var match = textUntilPosition.match(/(\w+)\(/);
+		const match = textUntilPosition.match(/(\w+)\(/);
 
 		if (!match) {
 			// @ts-ignore
 			return { suggestions: [] };
 		}
 
-		var word = model.getWordUntilPosition(position);
+		const word = model.getWordUntilPosition(position);
 
 		// @ts-ignore
-		var range: monaco.Range = {
+		const range: monaco.Range = {
 			startLineNumber: position.lineNumber,
 			endLineNumber: position.lineNumber,
 			startColumn: word.startColumn,
@@ -108,13 +121,17 @@ export const CPPCompletionProvider = {
 
 		console.log("Getting completions...");
 
-		let code = model.getValue();
+		let defs: monaco.languages.CompletionItem[] = [];
 
-		//let code_defs = getDefinitionsFrom(code);
-		let defs = StdLib;
+		const code = model.getValue();
+		scanHeaderIncludes(code, header => {
+			if (Definitions[header]) {
+				defs = defs.concat( Definitions[header] );
+			}
+		});
 
-		for (let name in tabs) {
-			let code = getSource(name);
+		for (const name in tabs) {
+			const code = getSource(name);
 			defs = defs.concat( getDefinitionsFrom(code) );
 		}
 

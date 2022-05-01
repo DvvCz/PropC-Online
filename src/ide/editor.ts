@@ -113,4 +113,8 @@ export function startIDE() {
 	sl_type.addEventListener("change", function(evt) {
 		changeSetting("download_type", sl_type.selectedIndex);
 	});
+
+	if (getSetting("intellisense")) {
+		loadStandardLibraries();
+	}
 }
