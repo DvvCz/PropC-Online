@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { PROPC_FDSERIAL_ENDPOINT, PROPC_SIMPLETEXT_ENDPOINT, PROPC_SIMPLETOOLS_ENDPOINT } from '../site/config';
+import { PROPC_FDSERIAL_ENDPOINT, PROPC_SIMPLETEXT_ENDPOINT, PROPC_SIMPLETOOLS_ENDPOINT, SIMPLELIBS_REPO } from '../site/config';
 import { in_intellisense, writeLine } from '../site/page';
 import { getSource, tabs } from '../site/tabhandler';
 
@@ -85,10 +85,25 @@ function loadDefinitionsFrom(endpoint: string) {
 	});
 }
 
+/**
+ * Like loadDefinitionsFrom but helps with finding the file path.
+ * @param folder Folder inside of SIMPLELIBS_REPO
+ * @param file File inside of /lib<file>/<file>.h
+ */
+function loadDef(folder: string, file: string) {
+	loadDefinitionsFrom(`${SIMPLELIBS_REPO}${folder}/lib${file}/${file}.h`);
+}
+
 export function loadStandardLibraries() {
-	loadDefinitionsFrom(PROPC_SIMPLETOOLS_ENDPOINT);
-	loadDefinitionsFrom(PROPC_SIMPLETEXT_ENDPOINT);
-	loadDefinitionsFrom(PROPC_FDSERIAL_ENDPOINT);
+	// Utility/libsimpletools/simpletools.h
+	loadDef("Utility", "simpletools")
+	loadDef("TextDevices", "fdserial");
+	loadDef("TextDevices", "simpletext");
+	loadDef("Utility", "colormath");
+	loadDef("Audio", "text2speech");
+	loadDef("Audio", "sound");
+	loadDef("Sensor", "ping");
+	loadDef("Time", "datetime");
 }
 
 export const CPPCompletionProvider = {

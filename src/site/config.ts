@@ -1,13 +1,13 @@
 export const PROPC_COMPILER_ENDPOINT = "https://solo.parallax.com/single/prop-c/bin";
 
-const SIMPLE_LIBS_PREFIX = "https://raw.githubusercontent.com/parallaxinc/Simple-Libraries/master/Learn/Simple%20Libraries/"
+export const SIMPLELIBS_REPO = "https://raw.githubusercontent.com/parallaxinc/Simple-Libraries/master/Learn/Simple%20Libraries/"
 // Commit 1cc167c103756e5772b533c833a0f34e6050f459
-export const PROPC_SIMPLETOOLS_ENDPOINT = SIMPLE_LIBS_PREFIX + "Utility/libsimpletools/simpletools.h";
-export const PROPC_SIMPLETEXT_ENDPOINT = SIMPLE_LIBS_PREFIX + "TextDevices/libsimpletext/simpletext.h";
-export const PROPC_FDSERIAL_ENDPOINT = SIMPLE_LIBS_PREFIX + "TextDevices/libfdserial/fdserial.h";
+export const PROPC_SIMPLETOOLS_ENDPOINT = SIMPLELIBS_REPO + "Utility/libsimpletools/simpletools.h";
+export const PROPC_SIMPLETEXT_ENDPOINT = SIMPLELIBS_REPO + "TextDevices/libsimpletext/simpletext.h";
+export const PROPC_FDSERIAL_ENDPOINT = SIMPLELIBS_REPO + "TextDevices/libfdserial/fdserial.h";
 
 // Included in simpletools.h for you
-export const PROPC_SIMPLEI2C_ENDPOINT = SIMPLE_LIBS_PREFIX + "Protocol/libsimplei2c/simplei2c.h"
+export const PROPC_SIMPLEI2C_ENDPOINT = SIMPLELIBS_REPO + "Protocol/libsimplei2c/simplei2c.h"
 
 export const DEFAULT_CODE = `
 // Simpletools is from parallax and can be found here:
