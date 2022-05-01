@@ -26,9 +26,13 @@ function getIncludeLines(code: string): Record<string, number> {
 	while ((match = INCLUDE_RGX.exec(code)) !== null) {
 		const filename = match[1];
 		const before = code.substring(1, match.index);
-		const line = (before.match(NL) || []).length;
 
-		record[filename] = line;
+		const lines = before.match(NL);
+		if (lines) {
+			record[filename] = lines.length + 1;
+		} else {
+			record[filename] = 0;
+		}
 	}
 
 	return record;
@@ -46,11 +50,9 @@ function getPreprocessed(mainfile: string, included: Record<string, boolean> = {
 		if (included[filename]) return "";
 		if (!getSource(filename)) return substr; // File not found, regular C include?
 
-		return `
-			#line 1 "${filename}"
-			${ getPreprocessed(filename, included) }
-			#line ${ lines[filename] } "${mainfile}"
-		`;
+		return `#line 1 "${filename}"
+${ getPreprocessed(filename, included) }
+#line ${ lines[filename] } "${mainfile}"`;
 	});
 }
 
