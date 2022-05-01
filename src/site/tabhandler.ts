@@ -111,7 +111,6 @@ export function setupTabs() {
 		let name;
 		do {
 			name = `file${count}.c`;
-			console.log("NAME, ", name, tabs[name]);
 			count++;
 		} while( tabs[name] )
 		addTab(name);

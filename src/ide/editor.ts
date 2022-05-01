@@ -82,6 +82,7 @@ export function startIDE() {
 				if (connection) {
 					const selected = sl_type.options[sl_type.selectedIndex];
 					const dl_type = (selected ? selected.value : "EEPROM") as DownloadType;
+
 					connection.downloadCode(resp.binary, resp.extension, dl_type);
 				} else {
 					writeLine("Download: Failed, no connection established with BlocklyPropLauncher");

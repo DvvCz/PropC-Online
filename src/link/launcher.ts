@@ -107,6 +107,7 @@ export class LauncherConnection {
 
 			connection.onerror = function(error) {
 				console.error(`WebSocket error: ${error.toString()}`);
+
 				self.close();
 			};
 
@@ -136,7 +137,10 @@ export class LauncherConnection {
 						case 1011: reason = "Internal server error"; break
 						default: reason = "Unknown reason";
 					}
-					console.log(`Socket closed: '${reason}' [${evt.code}] Reconnecting in ${ LAUNCHER_CONNECT_COOLDOWN / 1000 } seconds..`)
+
+					const msg = `Socket closed: '${reason}' [${evt.code}] Reconnecting in ${ LAUNCHER_CONNECT_COOLDOWN / 1000 } seconds..`;
+					console.warn(msg);
+					writeLine("WARNING: " + msg);
 				}
 				startConnecting();
 			};
@@ -224,8 +228,16 @@ export class LauncherConnection {
 
 		console.log(`Sending to port ${ payload.portPath }`);
 
+		const full_payload = JSON.stringify(payload);
+
 		if (this.active) {
-			this.active.send( JSON.stringify(payload) );
+			const full_payload = JSON.stringify(payload);
+			if (full_payload.length > 70000) {
+				writeLine(`WARNING: Payload of ${ full_payload.length } bytes may be too large to send to BlocklyPropLauncher!`);
+			}
+			this.active.send(full_payload);
+		} else {
+			writeLine("WARNING: Socket inactive, couldn't send code to robot.")
 		}
 	}
 }

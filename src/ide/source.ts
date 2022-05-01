@@ -59,7 +59,7 @@ ${ getPreprocessed(filename, included) }
 export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResponse) => void) {
 	ready = ready || function() {};
 	const code = getPreprocessed("main.c");
-	console.log("Compiling:", code);
+	console.log("Compiling:", code.length, code);
 
 	if (current_compile) {
 		writeLine("Already compiling!")
