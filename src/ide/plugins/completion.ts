@@ -1,8 +1,8 @@
 import * as monaco from 'monaco-editor';
-import { IDEPlugin } from '../editor';
+import { IDEPlugin } from '../ide';
 
 import { getSetting, SIMPLELIBS_REPO } from '../../site/config';
-import { in_intellisense, writeLine } from '../../site/page';
+import { in_intellisense } from '../../site/page';
 import { getSource, tabs } from '../../ide/tabhandler';
 
 const CompletionItemKind = monaco.languages.CompletionItemKind;

@@ -43,6 +43,17 @@ export function getSource(source: string) {
 
 export function setSource(source: string, content: string) {
 	getSources()[source] = content;
+
+	if (current_file == source) {
+		// Be sure to set ide variables as to not cause a monaco editor model change feedback loop...
+		ide.can_autosave = false;
+		ide.set_source = true;
+
+		ide.editor.setValue(content);
+
+		ide.set_source = false;
+		ide.can_autosave = true;
+	}
 }
 
 class Tab {
@@ -57,8 +68,6 @@ class Tab {
 export function setTab(name: string) {
 	let tab = tabs[name];
 	if (!tab) { return false }
-
-	let element = ide_tabs.childNodes;
 
 	setSource( current_file, ide.editor.getValue() );
 	saveSources();

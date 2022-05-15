@@ -1,6 +1,6 @@
 // Bottom row, under the editor
 import * as monaco from 'monaco-editor';
-import { IDEPlugin } from '../editor';
+import { IDEPlugin } from '../ide';
 
 import * as FileSaver from "file-saver";
 import { connection, DownloadType } from "../../link/launcher";

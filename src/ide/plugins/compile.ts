@@ -6,20 +6,22 @@ import * as monaco from "monaco-editor";
 import { COMPILE_TYPING_TIMEOUT } from "../../site/config";
 import { Console } from "../../ide/console";
 import { current_file, saveSources, setSource } from "../../ide/tabhandler";
-import { IDEPlugin } from "../editor";
+import { IDEPlugin } from "../ide";
 import { getCompileResults } from "../inspector";
 import { tryCompile } from "../source";
+import { ide } from "../..";
 
 let current_timeout: number;
 function onContentChanged(editor: monaco.editor.IStandaloneCodeEditor) {
+	if (ide.set_source) { return }
+
 	if (current_timeout) {
 		// Cancel old timeout, user is typing again.
 		clearTimeout(current_timeout);
 	}
 	current_timeout = setTimeout(function() {
 		// Autosave even if it didn't compile correctly.
-		setSource(current_file, editor.getValue());
-		saveSources();
+		ide.save();
 
 		tryCompile(function(http_success, resp) {
 			if (http_success) {
@@ -44,7 +46,6 @@ function onContentChanged(editor: monaco.editor.IStandaloneCodeEditor) {
 			}
 		});
 
-		Console.writeln("⏺️ Autosaved!");
 		current_timeout = null;
 	}, COMPILE_TYPING_TIMEOUT);
 }

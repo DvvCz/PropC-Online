@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { IDEPlugin } from '../editor';
+import { IDEPlugin } from '../ide';
 
 import { changeSetting, getSetting } from "../../site/config";
 import { in_intellisense, sl_type } from "../../site/page";

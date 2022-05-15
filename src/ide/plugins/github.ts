@@ -1,9 +1,10 @@
 import * as monaco from 'monaco-editor';
-import { IDEPlugin } from '../editor';
+import { IDEPlugin } from '../ide';
 
 import { btn_import, btn_import_cancel, btn_import_open, div_popup, in_github_repo } from "../../site/page";
 import { Console } from '../console';
-import { addTab, setSource } from '../tabhandler';
+import { addTab, saveSources, setSource } from '../tabhandler';
+import { ide } from '../..';
 
 const RequestForm: RequestInit = {
 	"method": "GET",
@@ -40,9 +41,14 @@ function onImportClicked() {
 			let fulfilled = 0;
 			let must_fulfill = files.length;
 
+			ide.can_autosave = false;
+
 			function checkFulfilled() {
 				if (fulfilled == must_fulfill) {
 					// All done!
+					saveSources();
+					ide.can_autosave = true;
+
 					div_popup.style.visibility = "hidden";
 					Console.writeln(`✔️ Successfully imported from ${repo}!`);
 				}

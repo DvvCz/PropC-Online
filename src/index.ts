@@ -1,4 +1,4 @@
-import { IDE } from './ide/editor';
+import { IDE } from './ide/ide';
 
 export const ide = new IDE();
 ide.setupTabs();

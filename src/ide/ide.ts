@@ -1,7 +1,7 @@
 import * as monaco from 'monaco-editor';
 
 import { getSetting } from '../site/config';
-import { getSource } from '../ide/tabhandler';
+import { current_file, getSource, saveSources, setSource } from './tabhandler';
 
 export abstract class IDEPlugin {
 	static load(editor: monaco.editor.IStandaloneCodeEditor) {}// (editor: monaco.editor.IStandaloneCodeEditor) => void;
@@ -16,9 +16,12 @@ import { CompletionPlugin } from './plugins/completion';
 import { setupTabs } from './tabhandler';
 import { tryCompile } from './source';
 import { startConnecting } from '../link/launcher';
+import { Console } from './console';
 
 export class IDE {
 	public editor: monaco.editor.IStandaloneCodeEditor;
+	public can_autosave: boolean = true;
+	public set_source: boolean = false; // Whether the event was caused by a call to setSource
 
 	constructor() {
 		this.editor = monaco.editor.create(document.getElementById("container"), {
@@ -39,4 +42,14 @@ export class IDE {
 	setupTabs = setupTabs
 	tryCompile = tryCompile
 	startConnecting = startConnecting
+
+	getValue = () => this.editor.getValue();
+
+	save() {
+		if (!this.can_autosave) { return }
+
+		setSource(current_file, this.getValue());
+		saveSources();
+		Console.writeln("⏺️ Autosaved!");
+	}
 }
