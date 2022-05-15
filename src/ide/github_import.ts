@@ -19,7 +19,7 @@ export function onImportClicked() {
 		return;
 	}
 
-	const full_link = `http://github.com/${repo}`;
+	const full_link = `https://github.com/${repo}`;
 
 	function handle_err(err: any) {
 		alert(`Error: ${err}`);
