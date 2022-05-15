@@ -52,7 +52,6 @@ ${ getPreprocessed(filename, included) }
 export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResponse) => void) {
 	ready = ready || function() {};
 	const code = getPreprocessed("main.c");
-	console.log("Compiling:", code.length, code);
 
 	if (current_compile) {
 		Console.writeln("❌ Already compiling!");
@@ -72,6 +71,7 @@ export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResp
 	monaco.editor.setModelMarkers(model, "owner", []);
 
 	Console.write("💻 Compiling... ");
+	if (code.length < 5) { return Console.error("Failed: Code too small to compile") }
 
 	current_compile = compile(code);
 

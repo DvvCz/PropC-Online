@@ -14,6 +14,7 @@ Uses [monaco](https://github.com/microsoft/monaco-editor) for the editor, [Block
 * Have multiple files in your IDE to keep stuff organized.
 * Editor themes (dark and light)
 * Automatic compilation as you type
+* Import straight from Github
 
 ## Previews
 ### Multiple files
@@ -21,6 +22,9 @@ Uses [monaco](https://github.com/microsoft/monaco-editor) for the editor, [Block
 
 ### Console / Overview
 ![console](assets/overview.gif)
+
+### Import from Github
+![github](assets/import.gif)
 
 ## Why?
 
