@@ -8,13 +8,12 @@ Uses [monaco](https://github.com/microsoft/monaco-editor) for the editor, [Block
 
 ## Features
 * Diagnostics in your IDE (warnings/editors) 📈
-* Sleek monaco editor
+* Sleek monaco editor w/ dark & light themes
 * Autocomplete from Parallax Standard Libraries
 * Autosave your sessions (Configs at the top, alongside your code in every file)
-* Have multiple files in your IDE to keep stuff organized.
-* Editor themes (dark and light)
+* Multiple files to keep your project organized.
 * Automatic compilation as you type
-* Import straight from Github
+* Import straight from Github :octocat:
 
 ## Previews
 ### Multiple files
