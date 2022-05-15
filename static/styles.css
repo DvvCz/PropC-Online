@@ -108,6 +108,31 @@ div.console textarea {
 	padding: 5px 0;
 }
 
+div.popup {
+	visibility: hidden;
+	background-color: #6c6c70;
+	border: 10px #4f6ec5;
+
+	text-align: center;
+
+	display: inline-block;
+	position: fixed;
+
+	top: 50%;
+	left: 50%;
+
+	width: 20%;
+	height: 30%;
+
+	margin-left: -10%;
+	margin-top: -15%;
+}
+
+div.popup.input {
+	height: 20%;
+	padding: 30%;
+}
+
 /*
 	Button CSS by Algolia
 	https://getcssscan.com/css-buttons-examples
@@ -117,7 +142,7 @@ div.controls {
 	height: 4%;
 }
 
-div.controls button {
+div.controls button, div.popup button {
 	align-items: center;
 	appearance: none;
 	background-color: #4f6ec5;
@@ -148,16 +173,16 @@ div.controls button {
 	font-size: 18px;
 }
 
-div.controls button:focus {
+div.controls button:focus, div.popup button:focus  {
 	box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
 }
 
-div.controls button:hover {
+div.controls button:hover, div.popup button:hover {
 	box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
 	transform: translateY(-2px);
 }
 
-div.controls button:active {
+div.controls button:active, div.popup button:active {
 	box-shadow: #D6D6E7 0 3px 7px inset;
 	transform: translateY(2px);
 }

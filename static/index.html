@@ -15,7 +15,7 @@
 
 		<div class="configs">
 			<label for="in_baudrate">Baudrate</label>
-			<input type="text" id="in_baudrate" name="in_baudrate" placeholder="19200" required>
+			<input type="text" id="in_baudrate" name="in_baudrate" placeholder="19200" title="How often updates are sent to the propeller board" required>
 
 			<label for="sl_ports">Port</label>
 			<select name="Port" id="sl_ports"></select>
@@ -33,7 +33,7 @@
 			</select>
 
 			<label for="in_intellisense">Intellisense</label>
-			<input type="checkbox" value="Intellisense" id="in_intellisense">
+			<input type="checkbox" value="Intellisense" id="in_intellisense" title="Enable autocomplete (functions retrieved online from github)">
 		</div>
 
 		<div class="ide-tabs" id="ide-tabs">
@@ -47,9 +47,23 @@
 		</div>
 
 		<div class="controls">
-			<button id="btn_clear">Clear Terminal</button>
-			<button id="btn_send">Send to Robot</button>
-			<button id="btn_download_bin">Download Binary</button>
+			<button id="btn_clear" title="Clear items in terminal">Clear Terminal</button>
+			<button id="btn_send" title="Send code to your propeller board">Send to Robot</button>
+			<button id="btn_download_bin" title="Downloads generated .elf file after a successful compile">Download Binary</button>
+			<button id="btn_import_open" style="background-color: rgb(58, 58, 58);" title="Opens a menu to import files from Github">Import from Github</button>
+		</div>
+
+		<div class="popup" id="div_popup">
+			<h1> Import from Github? </h1>
+
+			<!-- Yes. A lot of inline CSS. Sorry :p -->
+
+			<input type="text" id="in_github_repo" style="height: 20%; width: 80%; text-align: center; font-size: large;" placeholder="DvvCz/MorseBot" required>
+
+			<div style="height: 20%; position: absolute; top: 70%; left: 50%; margin-top: -10%; margin-left: -25%;">
+				<button id="btn_import">Import</button>
+				<button id="btn_import_cancel" style="background-color: rgb(201, 78, 78)">Cancel</button>
+			</div>
 		</div>
 
 		<script type="module" src="index.js"></script>

@@ -2,14 +2,14 @@ import * as monaco from 'monaco-editor';
 import * as FileSaver from 'file-saver';
 
 import { getSetting, changeSetting, COMPILE_TYPING_TIMEOUT } from '../site/config';
-import { compile, BlocklyPropResponse } from '../site/website';
-import { writeLine, clear, btn_clear, btn_send, btn_download_bin, ta_compile_out, sl_type, in_intellisense } from '../site/page';
-import { DownloadType, startConnecting, connection } from '../link/launcher';
+import { writeLine, clear, btn_clear, btn_send, btn_download_bin, sl_type, in_intellisense } from '../site/page';
+import { DownloadType, connection } from '../link/launcher';
 import { getCompileResults } from '../ide/inspector';
 import { loadStandardLibraries, CPPCompletionProvider } from '../ide/completion';
-import { setupTabs, setTab, getSource, saveSources, setSource, current_file } from '../site/tabhandler';
+import { getSource, saveSources, setSource, current_file } from '../site/tabhandler';
 
 import { tryCompile } from './source';
+import { addGHEventListeners } from './github_import';
 
 export const editor = monaco.editor.create(document.getElementById("container"), {
 	value: getSource("main.c"),
@@ -113,6 +113,8 @@ export function startIDE() {
 	sl_type.addEventListener("change", function(evt) {
 		changeSetting("download_type", sl_type.selectedIndex);
 	});
+
+	addGHEventListeners();
 
 	if (getSetting("intellisense")) {
 		loadStandardLibraries();
