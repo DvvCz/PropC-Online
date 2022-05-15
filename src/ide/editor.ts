@@ -1,122 +1,42 @@
 import * as monaco from 'monaco-editor';
-import * as FileSaver from 'file-saver';
 
-import { getSetting, changeSetting, COMPILE_TYPING_TIMEOUT } from '../site/config';
-import { writeLine, clear, btn_clear, btn_send, btn_download_bin, sl_type, in_intellisense } from '../site/page';
-import { DownloadType, connection } from '../link/launcher';
-import { getCompileResults } from '../ide/inspector';
-import { loadStandardLibraries, CPPCompletionProvider } from '../ide/completion';
-import { getSource, saveSources, setSource, current_file } from '../site/tabhandler';
+import { getSetting } from '../site/config';
+import { getSource } from '../ide/tabhandler';
 
+export abstract class IDEPlugin {
+	static load(editor: monaco.editor.IStandaloneCodeEditor) {}// (editor: monaco.editor.IStandaloneCodeEditor) => void;
+	static postload(editor: monaco.editor.IStandaloneCodeEditor) {}//: (editor: monaco.editor.IStandaloneCodeEditor) => void;
+}
+
+import { ConfigPlugin } from './plugins/config';
+import { ControlPlugin } from './plugins/control';
+import { ThemePlugin } from './plugins/theme';
+import { CompilePlugin } from './plugins/compile';
+import { CompletionPlugin } from './plugins/completion';
+import { setupTabs } from './tabhandler';
 import { tryCompile } from './source';
-import { addGHEventListeners } from './github_import';
+import { startConnecting } from '../link/launcher';
 
-export const editor = monaco.editor.create(document.getElementById("container"), {
-	value: getSource("main.c"),
-	language: "cpp",
-	theme: getSetting("theme")
-});
+export class IDE {
+	public editor: monaco.editor.IStandaloneCodeEditor;
 
-const theme_selection = document.getElementById("sl_theme") as HTMLSelectElement;
-theme_selection.addEventListener("change", function(evt: Event) {
-	//@ts-ignore
-	let theme: string = evt.target.value;
-	monaco.editor.setTheme(theme);
+	constructor() {
+		this.editor = monaco.editor.create(document.getElementById("container"), {
+			value: getSource("main.c"),
+			language: "cpp",
+			theme: getSetting("theme")
+		});
 
-	changeSetting("theme", theme);
-});
+		CompilePlugin.load(this.editor);
+		ConfigPlugin.load(this.editor);
+		ControlPlugin.load(this.editor);
+		ThemePlugin.load(this.editor);
+		CompletionPlugin.load(this.editor);
 
-monaco.editor.setTheme(getSetting("theme"));
-
-monaco.languages.registerCompletionItemProvider("cpp", CPPCompletionProvider);
-
-let current_timeout: number;
-editor.onDidChangeModelContent(function() {
-	if (current_timeout) {
-		// Cancel old timeout, user is typing again.
-		clearTimeout(current_timeout);
+		CompletionPlugin.postload(this.editor);
 	}
-	current_timeout = setTimeout(function() {
-		// Autosave even if it didn't compile correctly.
-		setSource(current_file, editor.getValue());
-		saveSources();
-		writeLine("Autosaved!");
 
-		tryCompile(function(http_success, resp) {
-			if (http_success) {
-				if (resp.success) {
-					writeLine("Compiled!");
-				} else {
-					// Extract warnings / errors to display in editor
-					const results = getCompileResults( resp['compiler-error'] ).map(x => {
-						return {
-							startLineNumber: x.line,
-							endLineNumber: x.line,
-
-							startColumn: x.char,
-							endColumn: x.end_char,
-
-							message: x.msg,
-							severity: x.type == "warning" ? monaco.MarkerSeverity.Warning : monaco.MarkerSeverity.Error
-						}
-					});
-
-					let model = monaco.editor.getModels()[0];
-					monaco.editor.setModelMarkers(model, "owner", results);
-				}
-			}
-		});
-		current_timeout = null;
-	}, COMPILE_TYPING_TIMEOUT);
-});
-
-export function startIDE() {
-	btn_clear.addEventListener("click", function(evt) {
-		clear();
-	});
-
-	// 'Send to Robot' button
-	btn_send.addEventListener("click", function(evt) {
-		tryCompile(function(http_success, resp) {
-			if (http_success && resp.success) {
-				if (connection) {
-					const selected = sl_type.options[sl_type.selectedIndex];
-					const dl_type = (selected ? selected.value : "EEPROM") as DownloadType;
-
-					connection.downloadCode(resp.binary, resp.extension, dl_type);
-				} else {
-					writeLine("Download: Failed, no connection established with BlocklyPropLauncher");
-				}
-			}
-		});
-	});
-
-	// 'Download Binary' button
-	btn_download_bin.addEventListener("click", function(evt) {
-		tryCompile(function(http_success, resp) {
-			if (http_success && resp.success) {
-				let blob = new Blob([resp.binary], {type: "application/octet-stream"});
-				FileSaver.saveAs(blob, `propc${resp.extension}`);
-			}
-		});
-	});
-
-	in_intellisense.addEventListener("click", function(evt) {
-		if (in_intellisense.checked) {
-			// Try and get functions from simpletools.h
-			loadStandardLibraries();
-		}
-		changeSetting("intellisense", in_intellisense.checked);
-	});
-
-	sl_type.selectedIndex = getSetting("download_type") as number;
-	sl_type.addEventListener("change", function(evt) {
-		changeSetting("download_type", sl_type.selectedIndex);
-	});
-
-	addGHEventListeners();
-
-	if (getSetting("intellisense")) {
-		loadStandardLibraries();
-	}
+	setupTabs = setupTabs
+	tryCompile = tryCompile
+	startConnecting = startConnecting
 }

@@ -1,6 +1,6 @@
-import { ide_tabs } from "./page";
-import { getSetting, changeSetting, COMPILE_TYPING_TIMEOUT } from '../site/config';
-import { editor } from "../ide/editor";
+import { ide_tabs } from "../site/page";
+import { getSetting, changeSetting } from '../site/config';
+import { ide } from "../index";
 
 // @ts-ignore
 import ContextMenu from "@mturco/context-menu";
@@ -11,9 +11,9 @@ export let current_file: string = "main.c";
 export let sources: Record<string, string>;
 
 // Have to check if it exists or not because of JS / TS importing in the wrong order....
-export function getSources() {
+export function getSources(): Record<string, string> {
 	if (!sources) {
-		sources = getSetting("sources") || new Map();
+		sources = getSetting("sources") || {};
 	}
 	return sources;
 }
@@ -22,10 +22,19 @@ export function saveSources() {
 	changeSetting("sources", getSources());
 }
 
-let main = sources["main.c"];
-if (!main) {
-	main = getSetting("code");
-	sources["main.c"] = main;
+// Backwards compatibility for when the IDE was just a single file.
+let main;
+if (sources) {
+	if (!sources["main.c"]) {
+		main = getSetting("code");
+		sources["main.c"] = main;
+	}
+} else {
+	sources = getSetting("sources");
+
+	if (!sources) {
+		sources = { ["main.c"]: getSetting("code") };
+	}
 }
 
 export function getSource(source: string) {
@@ -51,7 +60,7 @@ export function setTab(name: string) {
 
 	let element = ide_tabs.childNodes;
 
-	setSource( current_file, editor.getValue() );
+	setSource( current_file, ide.editor.getValue() );
 	saveSources();
 
 	current_file = name;
@@ -62,7 +71,7 @@ export function setTab(name: string) {
 		setSource(name, src);
 	}
 
-	editor.setValue(src);
+	ide.editor.setValue(src);
 
 	return true;
 }
@@ -131,7 +140,7 @@ export function setupTabs() {
 			fn: (elem: HTMLButtonElement) => {
 				if (elem.innerHTML == "main.c") return;
 
-				let tab = tabs[elem.innerHTML];
+				//const tab = tabs[elem.innerHTML];
 				closeTab(elem.innerHTML);
 			},
 		}

@@ -1,11 +1,6 @@
-import { startConnecting } from './link/launcher';
-import { setupTabs, addTab, setTab } from './site/tabhandler';
-import { startIDE } from './ide/editor';
-import { tryCompile } from './ide/source';
+import { IDE } from './ide/editor';
 
-setupTabs();
-startIDE();
-//setTab("main.c");
-startConnecting();
-
-tryCompile();
+export const ide = new IDE();
+ide.setupTabs();
+ide.startConnecting();
+ide.tryCompile();

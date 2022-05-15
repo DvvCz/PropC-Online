@@ -27,7 +27,6 @@ export async function compile(code: string): Promise<BlocklyPropResponse> {
 		return resp;
 	} catch(err) {
 		// Invalid payload?
-		// ta_compile_out.innerText = `Failed to compile: ${err}`;
 		return Promise.reject(`Failed to compile: ${err}`);
 	}
 }

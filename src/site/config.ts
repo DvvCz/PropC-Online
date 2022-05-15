@@ -76,7 +76,13 @@ export function getSetting(name: string) {
 setInterval(function() {
 	if (settings_changed) {
 		console.log(`Saving settings to localStorage.`);
-		localStorage.setItem("propc_settings", JSON.stringify(USER_SETTINGS));
+
+		// Just in case json stringify fails..
+		const json = JSON.stringify(USER_SETTINGS);
+		if (json) {
+			localStorage.setItem("propc_settings", JSON.stringify(USER_SETTINGS));
+		}
+
 		settings_changed = false;
 	}
 }, 1000)

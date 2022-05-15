@@ -1,5 +1,6 @@
-import { sl_ports, ta_compile_out, write, writeLine, in_baudrate } from "../site/page";
+import { sl_ports, ta_compile_out, in_baudrate } from "../site/page";
 import { LAUNCHER_CONNECT_COOLDOWN } from "../site/config";
+import { Console } from "../ide/console";
 
 enum WSAction {
 	Hello = "hello-client",
@@ -16,6 +17,22 @@ enum WSAction {
 	CloseCompile = "close-compile",
 	ConsoleLog = "console-log",
 	CloseWebsocket = "websocket-close"
+}
+
+// Websocket Error Codes
+const ErrorMessages: Record<number, string> = {
+	1000: "Normal closure",
+	1001: "Going away",
+	1002: "Protocol error",
+	1003: "Unsupported Data",
+	1004: "Reserved",
+	1005: "No status received",
+	1006: "Abnormal closure",
+	1007: "Invalid data",
+	1008: "Policy violation",
+	1009: "Message too big",
+	1010: "Mandatory extension",
+	1011: "Internal server error"
 }
 
 interface LauncherRecv {
@@ -68,7 +85,6 @@ interface LauncherSend {
 
 	portPath: string,
 
-
 	// Base64 encoded payload (.elf, .bin, .eeprom etc)
 	payload: string,
 
@@ -120,27 +136,10 @@ export class LauncherConnection {
 				if (evt.reason) {
 					console.log(`Socket closed with reason: '${evt.reason}' [${evt.code}] Reconnecting in ${ LAUNCHER_CONNECT_COOLDOWN / 1000 } seconds..`);
 				} else {
-					// This is awful. Can you seriously not index dictionaries with number keys?
-					let reason;
-					switch (evt.code) {
-						case 1000: reason = "Normal closure"; break
-						case 1001: reason = "Going away"; break
-						case 1002: reason = "Protocol error"; break
-						case 1003: reason = "Unsupported data"; break
-						case 1004: reason = "Reserved"; break
-						case 1005: reason = "No status received"; break
-						case 1006: reason = "Abnormal closure"; break
-						case 1007: reason = "Invalid data"; break
-						case 1008: reason = "Policy violation"; break
-						case 1009: reason = "Message too big"; break
-						case 1010: reason = "Mandatory extension"; break
-						case 1011: reason = "Internal server error"; break
-						default: reason = "Unknown reason";
-					}
-
+					const reason = ErrorMessages[evt.code] || "Unknown reason";
 					const msg = `Socket closed: '${reason}' [${evt.code}] Reconnecting in ${ LAUNCHER_CONNECT_COOLDOWN / 1000 } seconds..`;
-					console.warn(msg);
-					writeLine("WARNING: " + msg);
+
+					Console.warn(msg);
 				}
 				startConnecting();
 			};
@@ -180,12 +179,12 @@ export class LauncherConnection {
 					}
 					messageText = msg.msg;
 				}
-				write( messageText.replace('\r', '\n') );
+				Console.write( messageText.replace('\r', '\n') );
 				break;
 			case WSAction.UiCommand:
 				switch (msg.action) {
 					case "message-compile":
-						write( msg.msg.replace('\r', '\n') );
+						Console.write( msg.msg.replace('\r', '\n') );
 						break
 					case "open-terminal":
 						console.log("Opening Terminal!");
@@ -228,16 +227,14 @@ export class LauncherConnection {
 
 		console.log(`Sending to port ${ payload.portPath }`);
 
-		const full_payload = JSON.stringify(payload);
-
 		if (this.active) {
 			const full_payload = JSON.stringify(payload);
 			if (full_payload.length > 70000) {
-				writeLine(`WARNING: Payload of ${ full_payload.length } bytes may be too large to send to BlocklyPropLauncher!`);
+				Console.warn(`Payload of ${ full_payload.length } bytes may be too large to send to BlocklyPropLauncher!`);
 			}
 			this.active.send(full_payload);
 		} else {
-			writeLine("WARNING: Socket inactive, couldn't send code to robot.")
+			Console.warn("Socket inactive, couldn't send code to robot.")
 		}
 	}
 }

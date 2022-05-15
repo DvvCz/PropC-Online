@@ -1,18 +1,20 @@
 {
 	"name": "propc-online",
-	"version": "1.1.0",
-	"description": "Code propc online!",
+	"version": "1.2.0",
+	"description": "A PropC IDE for the browser!",
 	"main": "index.js",
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --loader:.ttf=file --outdir=static",
-		"wbuild": "esbuild src/index.ts --bundle --loader:.ttf=file --outdir=static && xcopy static dist /y"
+		"build": "esbuild src/index.ts --bundle --loader:.ttf=file --outdir=static"
 	},
 	"keywords": [
 		"propc",
 		"solo",
 		"blockly",
 		"propellerc",
-		"monaco"
+		"monaco",
+		"ide",
+		"c",
+		"c++"
 	],
 	"author": "David Cruz",
 	"license": "MIT",
@@ -32,6 +34,7 @@
 		"esbuild": "^0.14.20",
 		"file-saver": "^2.0.5",
 		"monaco-editor": "^0.32.1",
-		"monaco-editor-webpack-plugin": "^7.0.1"
+		"monaco-editor-webpack-plugin": "^7.0.1",
+		"monaco-themes": "^0.4.2"
 	}
 }

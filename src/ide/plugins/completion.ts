@@ -1,7 +1,9 @@
 import * as monaco from 'monaco-editor';
-import { PROPC_FDSERIAL_ENDPOINT, PROPC_SIMPLETEXT_ENDPOINT, PROPC_SIMPLETOOLS_ENDPOINT, SIMPLELIBS_REPO } from '../site/config';
-import { in_intellisense, writeLine } from '../site/page';
-import { getSource, tabs } from '../site/tabhandler';
+import { IDEPlugin } from '../editor';
+
+import { getSetting, SIMPLELIBS_REPO } from '../../site/config';
+import { in_intellisense, writeLine } from '../../site/page';
+import { getSource, tabs } from '../../ide/tabhandler';
 
 const CompletionItemKind = monaco.languages.CompletionItemKind;
 
@@ -106,7 +108,7 @@ export function loadStandardLibraries() {
 	loadDef("Time", "datetime");
 }
 
-export const CPPCompletionProvider = {
+const CPPCompletionProvider = {
 	provideCompletionItems: function (model: monaco.editor.IReadOnlyModel, position: monaco.Position): monaco.languages.CompletionList {
 		if (!in_intellisense.checked) { return null; }
 
@@ -155,3 +157,15 @@ export const CPPCompletionProvider = {
 		return { suggestions: defs };
 	}
 };
+
+export class CompletionPlugin implements IDEPlugin {
+	static load(editor: monaco.editor.IStandaloneCodeEditor) {
+		monaco.languages.registerCompletionItemProvider("cpp", CPPCompletionProvider);
+	}
+
+	static postload(editor: monaco.editor.IStandaloneCodeEditor) {
+		if (getSetting("intellisense")) {
+			loadStandardLibraries();
+		}
+	}
+}
