@@ -27,3 +27,5 @@ export const ide_tabs = document.getElementById("ide-tabs") as HTMLDivElement;
 in_intellisense.checked = getSetting("intellisense");
 sl_theme.value = getSetting("theme");
 in_baudrate.value = getSetting("baudrate");
+
+document.getElementById("title").innerHTML = `PropC Online 1.2.0`;
