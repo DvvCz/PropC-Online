@@ -6,11 +6,13 @@
 
 	display: block;
 	overflow: hidden;
+
+	height: 3%;
 }
 
 div.configs {
 	background-color: rgb(74, 74, 74);
-	padding: 5px;
+	padding: 0.4%;
 }
 
 div.configs.select {
@@ -21,7 +23,7 @@ div.configs.select {
 div.ide-tabs {
 	overflow: hidden;
 	background-color: inherit;
-	height: 30px;
+	height: 3%;
 
 	user-select: none;
 }
@@ -35,10 +37,10 @@ div.ide-tabs button {
 	font-style: bold;
 
 	border: 3px black;
-	height: 30px;
+	height: 100%;
 	width: fit-content;
 	color: white;
-	margin-left: 5px;
+	margin-left: 0.3%;
 
 	background-color: #3d3d3f;
 }
@@ -49,6 +51,11 @@ div.ide-tabs button:hover {
 
 div.ide-tabs button:active {
 	background-color: #6c6c70;
+}
+
+/* Need this so that everything else scales perfectly like the editor */
+html, body {
+	height: 100%;
 }
 
 body {
@@ -63,14 +70,14 @@ body {
 
 div.editor {
 	width: 100%;
-	height: 680px;
+	height: 70%;
 }
 
 div.console {
 	box-sizing: border-box;
 
 	width: 100%;
-	height: 150px;
+	height: 15%;
 }
 
 div.console textarea {
@@ -106,6 +113,10 @@ div.console textarea {
 	https://getcssscan.com/css-buttons-examples
 */
 
+div.controls {
+	height: 4%;
+}
+
 div.controls button {
 	align-items: center;
 	appearance: none;
@@ -118,7 +129,7 @@ div.controls button {
 	cursor: pointer;
 	display: inline-flex;
 	font-family: "JetBrains Mono",monospace;
-	height: 34px;
+	height: 100%;
 	justify-content: center;
 	line-height: 1;
 	list-style: none;

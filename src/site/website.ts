@@ -23,7 +23,7 @@ export interface BlocklyPropResponse {
 export async function compile(code: string): Promise<BlocklyPropResponse> {
 	fetch_payload.body = code;
 	try {
-		let resp: BlocklyPropResponse = await fetch(config.PROPC_COMPILER_ENDPOINT, fetch_payload).then(r => r.json());
+		const resp: BlocklyPropResponse = await fetch(config.PROPC_COMPILER_ENDPOINT, fetch_payload).then(r => r.json());
 		return resp;
 	} catch(err) {
 		// Invalid payload?

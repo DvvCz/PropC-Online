@@ -55,7 +55,7 @@ if (!USER_SETTINGS) {
 	USER_SETTINGS = DEFAULT_SETTINGS;
 } else {
 	// If there are any missing settings, get them from default
-	for (let key in DEFAULT_SETTINGS) {
+	for (const key in DEFAULT_SETTINGS) {
 		if (!USER_SETTINGS[key]) {
 			// @ts-ignore
 			USER_SETTINGS[key] = DEFAULT_SETTINGS[key];
