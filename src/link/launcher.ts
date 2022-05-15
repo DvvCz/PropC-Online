@@ -57,7 +57,7 @@ export function startConnecting() {
 			let ctx = new LauncherConnection();
 			ctx.connect()
 				.catch(err => {
-					console.error(`Error when connecting to BlocklyPropLauncher ${err}`);
+					Console.error(`Error when connecting to BlocklyPropLauncher ${err}`);
 				})
 				.then(ws => {
 					connection = ctx;
@@ -66,7 +66,7 @@ export function startConnecting() {
 					stopConnecting();
 				});
 		} catch(err) {
-			console.error(`Failed to establish connection with BlocklyPropLauncher (${err}). Retrying...`);
+			Console.error(`Failed to establish connection with BlocklyPropLauncher (${err}). Retrying...`);
 		}
 	}, LAUNCHER_CONNECT_COOLDOWN);
 }

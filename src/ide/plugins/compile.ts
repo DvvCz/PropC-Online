@@ -20,7 +20,6 @@ function onContentChanged(editor: monaco.editor.IStandaloneCodeEditor) {
 		// Autosave even if it didn't compile correctly.
 		setSource(current_file, editor.getValue());
 		saveSources();
-		Console.writeln("⏺️ Autosaved!");
 
 		tryCompile(function(http_success, resp) {
 			if (http_success) {
@@ -44,6 +43,8 @@ function onContentChanged(editor: monaco.editor.IStandaloneCodeEditor) {
 				}
 			}
 		});
+
+		Console.writeln("⏺️ Autosaved!");
 		current_timeout = null;
 	}, COMPILE_TYPING_TIMEOUT);
 }

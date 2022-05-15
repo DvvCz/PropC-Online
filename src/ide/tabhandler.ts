@@ -87,6 +87,9 @@ export function closeTab(name: string) {
 }
 
 export function addTab(name: string) {
+	// Make sure a tab with that name doesn't already exist.
+	if (tabs[name]) return;
+
 	const tab = document.createElement("button");
 	tab.type = "button";
 	tab.innerHTML = name;

@@ -71,7 +71,7 @@ export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResp
 	let model = monaco.editor.getModels()[0];
 	monaco.editor.setModelMarkers(model, "owner", []);
 
-	Console.setText("💻 Compiling... ");
+	Console.write("💻 Compiling... ");
 
 	current_compile = compile(code);
 
@@ -80,12 +80,12 @@ export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResp
 			if (resp.success) {
 				Console.writeln(`✔️ ${resp['compiler-output']}`)
 			} else {
-				Console.writeln(`❌ Failed: ${resp['compiler-error']}`)
+				Console.error(`Failed: ${resp['compiler-error']}`)
 			}
 			ready(true, resp);
 		})
 		.catch(reason => {
-			Console.setText(`❌ Failed: ${reason}`);
+			Console.error(`Failed: ${reason}`);
 			ready(false, reason);
 		})
 		.finally(() => {

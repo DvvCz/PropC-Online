@@ -85,4 +85,4 @@ setInterval(function() {
 
 		settings_changed = false;
 	}
-}, 1000)
+}, 500)

@@ -16,12 +16,13 @@ export class Console {
 		ta_compile_out.value += (msg + "\r\n");
 	}
 
-	static setText(msg: string) {
-		ta_compile_out.value = msg;
-	}
-
 	static warn(msg: string) {
 		this.writeln(`⚠️: ${msg}`);
 		console.warn(msg);
+	}
+
+	static error(msg: string) {
+		this.writeln(`❌: ${msg}`);
+		console.error(msg);
 	}
 }
