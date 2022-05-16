@@ -49,7 +49,7 @@ export function setSource(source: string, content: string) {
 		ide.can_autosave = false;
 		ide.set_source = true;
 
-		ide.editor.setValue(content);
+		ide.setValueSilent(content);
 
 		ide.set_source = false;
 		ide.can_autosave = true;
@@ -80,7 +80,7 @@ export function setTab(name: string) {
 		setSource(name, src);
 	}
 
-	ide.editor.setValue(src);
+	ide.setValueSilent(src);
 
 	return true;
 }

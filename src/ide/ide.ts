@@ -52,4 +52,16 @@ export class IDE {
 		saveSources();
 		Console.writeln("⏺️ Autosaved!");
 	}
+
+	setValue(value: string) {
+		this.editor.setValue(value);
+	}
+
+	/// Sets the value of the monaco editor without any side-effects (e.g. causing a compile or autosave)
+	setValueSilent(value: string) {
+		const old = this.set_source;
+		this.set_source = true;
+		this.editor.setValue(value);
+		this.set_source = old;
+	}
 }
