@@ -21,7 +21,7 @@ function onImportClicked() {
 		return;
 	}
 
-	const full_link = `https://github.com/${repo}.git`;
+	const full_link = `https://github.com/${repo}`;
 
 	function handle_err(err: any) {
 		alert(`Error: ${err}`);
