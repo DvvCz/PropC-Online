@@ -91,11 +91,15 @@ function onImportClicked() {
 			if (xhr.status === 200) {
 				received(xhr.responseText);
 			} else {
+				Console.writeln( xhr.responseType, xhr.status, xhr.statusText, xhr.timeout );
 				alert(xhr.statusText);
 			}
 		}
 	};
 	xhr.onerror = function (e) {
+		Console.writeln(`${xhr.responseType, xhr.status, xhr.statusText, xhr.timeout}`);
+		Console.writeln(`${e}`);
+
 		alert(xhr.statusText);
 	};
 	xhr.send(null);
