@@ -17,7 +17,7 @@ export interface BlocklyPropResponse {
 	"compiler-output": string;
 	"compiler-error": string;
 	binary: string;
-	extension: string;
+	extension: ".elf"|string;
 }
 
 export async function compile(code: string): Promise<BlocklyPropResponse> {

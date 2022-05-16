@@ -3,9 +3,25 @@ import * as monaco from 'monaco-editor';
 import { compile, BlocklyPropResponse } from '../site/website';
 import { Console } from '../ide/console';
 import { getSource } from '../ide/tabhandler';
+import * as util from '../util';
 
-let current_compile: Promise<BlocklyPropResponse>;
-let current_compile_timeout: number;
+interface CurrentCompile {
+	response?: Promise<BlocklyPropResponse>,
+	timeout?: number,
+	in_progress: boolean,
+
+	code_hash: number,
+	binary_out: string
+}
+
+let current_compile: CurrentCompile = {
+	response: null,
+	in_progress: false,
+	timeout: null,
+
+	code_hash: -1,
+	binary_out: ""
+};
 
 const INCLUDE_RGX = /#include\s*"([^"]+)"/g;
 const NL = /\n/g;
@@ -51,15 +67,17 @@ ${ getPreprocessed(filename, included) }
 
 export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResponse) => void) {
 	ready = ready || function() {};
+
 	const code = getPreprocessed("main.c");
 
-	if (current_compile) {
+	if (current_compile.in_progress) {
 		Console.writeln("❌ Already compiling!");
 
-		current_compile_timeout = setTimeout(function() {
+		current_compile.timeout = setTimeout(function() {
 			// Just in case the compile is never heard from.
-			current_compile = null;
-			current_compile_timeout = null;
+			current_compile.in_progress = false;
+			current_compile.timeout = null;
+			current_compile.response = null;
 
 			Console.writeln("⏲️ Compile timed out...");
 		}, 2000);
@@ -73,13 +91,33 @@ export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResp
 	Console.write("💻 Compiling... ");
 	if (code.length < 5) { return Console.error("Failed: Code too small to compile") }
 
-	current_compile = compile(code);
+	const code_hash = util.cyrb53(code);
+	if (current_compile.code_hash == code_hash) {
+		Console.writeln(`✔️ Cached`);
+		ready(true, {
+			success: true,
+			binary: current_compile.binary_out,
+			"compiler-output": "Compiled",
+			"compiler-error": "",
+			extension: ".elf"
+		});
+		return;
+	}
+
+	current_compile.in_progress = true;
+	current_compile.response = compile(code);
 
 	current_compile
+		.response
 		.then(resp => {
 			if (resp.success) {
+				current_compile.binary_out = resp.binary;
+				current_compile.code_hash = code_hash;
+
 				Console.writeln(`✔️ ${resp['compiler-output']}`)
 			} else {
+				current_compile.binary_out = "";
+				current_compile.code_hash = -1;
 				Console.error(`Failed: ${resp['compiler-error']}`)
 			}
 			ready(true, resp);
@@ -89,10 +127,10 @@ export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResp
 			ready(false, reason);
 		})
 		.finally(() => {
-			current_compile = null;
+			current_compile.in_progress = false;
 
-			if (current_compile_timeout) {
-				clearTimeout(current_compile_timeout);
+			if (current_compile.timeout) {
+				clearTimeout(current_compile.timeout);
 			}
 		});
 }
