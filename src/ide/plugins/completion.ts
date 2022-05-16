@@ -8,9 +8,11 @@ import { getSource, tabs } from '../../ide/tabhandler';
 const CompletionItemKind = monaco.languages.CompletionItemKind;
 
 const COMMENT_RGX = /\/\*(\*(?!\/)|[^*])*\*\//g;
-const FUNC_RGX = /(extern\s+)?(unsigned\s+)?(fdserial|int\d*(?:_t)?|void|long|bool|char|float|terminal)\s+\*?(\w+)\(([^)]*)\)/;
+const FUNC_RGX = /((?:extern|inline)\s+)?(unsigned\s+)?(fdserial|u?int\d*(?:_t)?|void|long|bool|char|float|terminal)\s*\*?(\w+)\(([^)]*)\)/;
 const VAR_RGX = /(extern\s+)?(unsigned\s+)?(\w+)\s+\*?(\w+);/;
+const LVAR_RGX = /(unsigned\s+)?(\w+)\s+\*?(\w+)\s+=/;
 const DEFINE_RGX = /#define\s+(\w+)\s+(\S+)/;
+const STRUCT_RGX = /struct\s+(\w+)\s*{/;
 
 function createLibObject(name: string, kind: monaco.languages.CompletionItemKind, desc: string): monaco.languages.CompletionItem {
 	return {
@@ -24,29 +26,86 @@ function createLibObject(name: string, kind: monaco.languages.CompletionItemKind
 	}
 }
 
+const KEYWORDS: string[] = [
+	"while", "for",
+	"do", "else", "if", "switch", "case", "default",
+
+	"inline", "extern",
+
+	"auto", "const", "unsigned", "signed",
+
+	"float", "double", "bool", "char", "int", "long", "short", "void",
+
+	"break", "return", "continue", "goto",
+	"enum", "union", "struct", "typedef",
+
+	"sizeof"
+];
+
+const BASE_DEFINITIONS: monaco.languages.CompletionItem[] = [];
+for (const kw of KEYWORDS) {
+	BASE_DEFINITIONS.push( createLibObject(kw, CompletionItemKind.Keyword, `Keyword: ${kw}`) );
+}
+
+BASE_DEFINITIONS.push({
+	label: "while",
+	kind: CompletionItemKind.Snippet,
+	documentation: "while loop",
+	insertText: "while (true) {\n\t${0}\n}",
+	range: null
+});
+
+BASE_DEFINITIONS.push({
+	label: "for",
+	kind: CompletionItemKind.Snippet,
+	documentation: "for loop",
+	insertText: "for (int i = 0; i < 10; i++) {\n\t${0}\n}",
+	range: null
+});
+
+BASE_DEFINITIONS.push({
+	label: "if",
+	kind: CompletionItemKind.Snippet,
+	documentation: "if condition",
+	insertText: "if (true) {\n\t${0}\n}",
+	range: null
+});
+
 function getDefinitionsFrom(code: string): monaco.languages.CompletionItem[] {
 	code = code.replace(COMMENT_RGX, "");
 
 	const out = [];
 	const lines = code.split("\n");
 	for (const line of lines) {
-		let def = line.match(DEFINE_RGX);
+		const def = line.match(DEFINE_RGX);
 		if (def) {
-			let name = def[1];
-			let val = def[2];
+			const name = def[1];
+			const val = def[2];
 			out.push( createLibObject(name, CompletionItemKind.Constant, `Constant: ${val}`) )
 		} else {
-			let func = line.match(FUNC_RGX);
+			const func = line.match(FUNC_RGX);
 			if (func) {
 				// Todo retvals
-				let name = func[4];
-				let params = func[5];
+				const name = func[4];
+				const params = func[5];
 				out.push( createLibObject(`${name}(${params})`, CompletionItemKind.Function, `Function: ${name} Takes ${params}`) )
 			} else {
-				let vars = line.match(VAR_RGX);
-				if (vars) {
-					let name = vars[4];
-					out.push( createLibObject(name, CompletionItemKind.Variable, `Variable: ${name}`) )
+				const vardecls = line.match(VAR_RGX);
+				if (vardecls) {
+					const name = vardecls[4];
+					out.push( createLibObject(name, CompletionItemKind.Variable, `Variable Declaration: ${name}`) )
+				} else {
+					const vardefs = line.match(LVAR_RGX);
+					if (vardefs) {
+						const name = vardefs[3];
+						out.push( createLibObject(name, CompletionItemKind.Variable, `Variable Definition: ${name}`) )
+					} else {
+						const struct = line.match(STRUCT_RGX);
+						if (struct) {
+							const name = struct[1];
+							out.push( createLibObject(name, CompletionItemKind.Struct, `Struct: ${name}`) )
+						}
+					}
 				}
 			}
 		}
@@ -138,7 +197,7 @@ const CPPCompletionProvider = {
 
 		console.log("Getting completions...");
 
-		let defs: monaco.languages.CompletionItem[] = [];
+		let defs: monaco.languages.CompletionItem[] = [...BASE_DEFINITIONS];
 
 		const code = model.getValue();
 		scanHeaderIncludes(code, header => {
