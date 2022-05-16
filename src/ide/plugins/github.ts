@@ -8,6 +8,10 @@ import { ide } from '../..';
 
 const RequestForm: RequestInit = {
 	"method": "GET",
+	headers: {
+		"Access-Control-Allow-Origin": "*",
+		"Content-Type": "text/plain"
+	}
 	// 	"credentials": "omit"
 };
 
@@ -84,31 +88,11 @@ function onImportClicked() {
 		}
 	}
 
-	const xhr = new XMLHttpRequest();
-	xhr.open("GET", full_link, true);
-	xhr.onload = function (e) {
-		if (xhr.readyState === 4) {
-			if (xhr.status === 200) {
-				received(xhr.responseText);
-			} else {
-				Console.writeln( xhr.responseType, xhr.status, xhr.statusText, xhr.timeout );
-				alert(xhr.statusText);
-			}
-		}
-	};
-	xhr.onerror = function (e) {
-		Console.writeln(`${xhr.responseType, xhr.status, xhr.statusText, xhr.timeout}`);
-		Console.writeln(`${e}`);
-
-		alert(xhr.statusText);
-	};
-	xhr.send(null);
-
 	// Assert link exists
-	/*fetch(full_link, RequestForm)
-	.then((res) => res.text())
-	.then(received)
-	.catch(handle_err);*/
+	fetch(full_link, RequestForm)
+		.then((res) => res.text())
+		.then(received)
+		.catch(handle_err);
 }
 
 export class GithubPlugin implements IDEPlugin {
