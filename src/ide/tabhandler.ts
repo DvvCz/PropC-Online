@@ -44,7 +44,7 @@ export function getSource(source: string) {
 export function setSource(source: string, content: string) {
 	getSources()[source] = content;
 
-	if (current_file == source) {
+	if (current_file == source && ide.editor.getValue() != content) {
 		// Be sure to set ide variables as to not cause a monaco editor model change feedback loop...
 		ide.can_autosave = false;
 		ide.set_source = true;
