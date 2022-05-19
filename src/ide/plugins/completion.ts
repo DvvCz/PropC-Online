@@ -165,6 +165,7 @@ export function loadStandardLibraries() {
 	loadDef("Audio", "sound");
 	loadDef("Sensor", "ping");
 	loadDef("Time", "datetime");
+	loadDef("Remote", "libsirc");
 }
 
 const CPPCompletionProvider = {
