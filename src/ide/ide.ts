@@ -1,7 +1,6 @@
 import * as monaco from 'monaco-editor';
 
 import { getSetting } from '../site/config';
-import { current_file, getSource, saveSources, setSource } from './tabhandler';
 import { div_container } from '../site/page';
 
 export abstract class IDEPlugin {
@@ -14,19 +13,21 @@ import { ControlPlugin } from './plugins/control';
 import { ThemePlugin } from './plugins/theme';
 import { CompilePlugin } from './plugins/compile';
 import { CompletionPlugin } from './plugins/completion';
-import { setupTabs } from './tabhandler';
 import { tryCompile } from './source';
 import { startConnecting } from '../link/launcher';
 import { Console } from './console';
+import { TabHandler } from './tabhandler';
 
 export class IDE {
 	public editor: monaco.editor.IStandaloneCodeEditor;
 	public can_autosave: boolean = true;
 	public set_source: boolean = false; // Whether the event was caused by a call to setSource
+	public tab_handler: TabHandler;
 
 	constructor() {
+		this.tab_handler = new TabHandler(this);
 		this.editor = monaco.editor.create(div_container, {
-			value: getSource("main.c"),
+			value: this.tab_handler.getSource("main.c"),
 			language: "cpp",
 			theme: getSetting("theme")
 		});
@@ -40,7 +41,6 @@ export class IDE {
 		CompletionPlugin.postload(this.editor);
 	}
 
-	setupTabs = setupTabs
 	tryCompile = tryCompile
 	startConnecting = startConnecting
 
@@ -49,8 +49,8 @@ export class IDE {
 	save() {
 		if (!this.can_autosave) { return }
 
-		setSource(current_file, this.getValue());
-		saveSources();
+		this.tab_handler.current.setSource(this.getValue());
+		this.tab_handler.saveSources();
 		Console.writeln("⏺️ Autosaved!");
 	}
 

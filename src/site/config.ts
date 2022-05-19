@@ -39,8 +39,6 @@ export const LAUNCHER_CONNECT_COOLDOWN = 3000;
 
 const DEFAULT_SETTINGS: Record<string, any> = {
 	theme: "vs-dark",
-
-	code: DEFAULT_CODE,
 	sources: { ["main.c"]: DEFAULT_CODE },
 
 	intellisense: true,

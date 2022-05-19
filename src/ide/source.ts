@@ -2,8 +2,8 @@ import * as monaco from 'monaco-editor';
 
 import { compile, BlocklyPropResponse } from '../site/website';
 import { Console } from '../ide/console';
-import { getSource } from '../ide/tabhandler';
 import * as util from '../util';
+import { ide } from '..';
 
 interface CurrentCompile {
 	response?: Promise<BlocklyPropResponse>,
@@ -49,7 +49,7 @@ function getIncludeLines(code: string): Record<string, number> {
 
 // Replaces all instances of #include "tab.c" with the code from the tab.
 function getPreprocessed(mainfile: string, included: Record<string, boolean> = {}): string {
-	let code = getSource(mainfile);
+	let code = ide.tab_handler.getSource(mainfile);
 	included[mainfile] = true;
 
 	const lines = getIncludeLines(code);
@@ -57,7 +57,7 @@ function getPreprocessed(mainfile: string, included: Record<string, boolean> = {
 	return code.replaceAll(INCLUDE_RGX, function(substr, filename) {
 		// Already included, ignore.
 		if (included[filename]) return "";
-		if (!getSource(filename)) return substr; // File not found, regular C include?
+		if (!ide.tab_handler.getSource(filename)) return substr; // File not found, regular C include?
 
 		return `#line 1 "${filename}"
 ${ getPreprocessed(filename, included) }
@@ -120,11 +120,11 @@ export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResp
 				current_compile.code_hash = -1;
 				Console.error(`Failed: ${resp['compiler-error']}`)
 			}
-			ready(true, resp);
+			ready!(true, resp);
 		})
 		.catch(reason => {
 			Console.error(`Failed: ${reason}`);
-			ready(false, reason);
+			ready!(false, reason);
 		})
 		.finally(() => {
 			current_compile.in_progress = false;

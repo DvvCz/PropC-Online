@@ -3,7 +3,7 @@ import { IDEPlugin } from '../ide';
 
 import { btn_import, btn_import_cancel, btn_import_open, div_popup, in_github_repo } from "../../site/page";
 import { Console } from '../console';
-import { addTab, saveSources, setSource } from '../tabhandler';
+import { TabHandler } from '../tabhandler';
 import { ide } from '../..';
 
 const RequestForm: RequestInit = { method: "GET" };
@@ -34,8 +34,8 @@ async function scrape(repostr: string) {
 			const raw_file_url = `https://raw.githubusercontent.com/${repostr}/${branch}/${path}`;
 			try {
 				const content = await (await fetch(raw_file_url)).text();
-				setSource(path, content)
-				addTab(path);
+				ide.tab_handler.setSource(path, content)
+				ide.tab_handler.addTab(path);
 			} catch(err) {
 				Console.error(`Failed to get file '${path}': ${err}`)
 			}
@@ -58,8 +58,8 @@ async function api(repostr: string) {
 			const raw_file_url = `https://raw.githubusercontent.com/${repostr}/${branch}/${path}`;
 			try {
 				const content = await (await fetch(raw_file_url)).text();
-				setSource(path, content)
-				addTab(path);
+				ide.tab_handler.setSource(path, content)
+				ide.tab_handler.addTab(path);
 			} catch(err) {
 				Console.error(`Failed to get file '${path}': ${err}`)
 			}
@@ -83,7 +83,7 @@ function onImportClicked() {
 		// This unfortunately will have a limit with github api calls.
 		api(repo);
 
-		saveSources();
+		ide.tab_handler.saveSources();
 	} catch(err) {
 		Console.error(`Failed to import from github: ${err}`);
 	} finally {

@@ -1,9 +1,9 @@
 import * as monaco from 'monaco-editor';
-import { IDEPlugin } from '../ide';
+import { IDE, IDEPlugin } from '../ide';
 
 import { getSetting, SIMPLELIBS_REPO } from '../../site/config';
 import { in_intellisense } from '../../site/page';
-import { getSource, tabs } from '../../ide/tabhandler';
+import { ide } from '../..';
 
 const CompletionItemKind = monaco.languages.CompletionItemKind;
 
@@ -130,7 +130,7 @@ function scanHeaderIncludes(code: string, callback: (header: string)=>void) {
 /// Load C++ / C definitions from a raw url to text.
 /// It will do it's best to scan for functions and #defines and throw them at monaco for autocomplete.
 function loadDefinitionsFrom(endpoint: string) {
-	const filename = endpoint.split("/").pop();
+	const filename = endpoint.split("/").pop()!;
 	fetch(endpoint, {
 		method: "GET"
 	})
@@ -205,8 +205,8 @@ const CPPCompletionProvider = {
 			}
 		});
 
-		for (const name in tabs) {
-			const code = getSource(name);
+		for (const name in ide.tab_handler.tabs) {
+			const code = ide.tab_handler.getSource(name);
 			defs = defs.concat( getDefinitionsFrom(code) );
 		}
 

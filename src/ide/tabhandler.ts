@@ -1,48 +1,156 @@
 import { ide_tabs } from "../site/page";
 import { getSetting, changeSetting } from '../site/config';
-import { ide } from "../index";
 
 // @ts-ignore
 import ContextMenu from "@mturco/context-menu";
+import { ide } from "..";
+import { getDefaultValue } from "typedoc/dist/lib/utils/options/declaration";
 
-export const tabs: Record<string, Tab> = {};
+export class TabHandler {
+	tabs: Record<string, Tab>;
+	current: Tab;
 
-export let current_file: string = "main.c";
+	// Backwards compatibility for when the IDE was just a single file.
+	sources: Record<string, string> = getSetting("sources") || {
+		["main.c"]: getSetting("code")
+	};
 
-// Backwards compatibility for when the IDE was just a single file.
-export const sources: Record<string, string> = getSetting("sources") || {
-	["main.c"]: getSetting("code")
-};
+	constructor() {
+		this.tabs = {};
+		this.current = this.addTab("main.c");
 
-// Have to check if it exists or not because of JS / TS importing in the wrong order....
-export function getSources(): Record<string, string> {
-	return sources;
-}
+		const tabs = getSetting("tabs");
+		if (tabs && tabs["main.c"]) {
+			for (const name in tabs) {
+				this.addTab(name);
+			}
+		} else {
+			this.addTab("main.c");
+		}
 
-export function saveSources() {
-	changeSetting("sources", sources);
-}
+		let count = 0;
+		const tab_add = document.getElementById("btn_add_tab") as HTMLButtonElement;
+		tab_add.onclick = function() {
+			// Find next available name slot
+			let name;
+			do {
+				name = `file${count}.c`;
+				count++;
+			} while( tabs[name] )
+			ide.tab_handler.addTab(name);
+		}
 
-export function getSource(source: string): string {
-	return sources[source] || "";
-}
+		tab_add.oncontextmenu = function(e) {
+			e.preventDefault();
+		}
 
-export function setSource(source: string, content: string) {
-	getSources()[source] = content;
+		const styling = {
+			className: "contextmenu",
+			minimalStyling: true
+		};
 
-	if (current_file == source && ide.editor.getValue() != content) {
-		// Be sure to set ide variables as to not cause a monaco editor model change feedback loop...
-		ide.can_autosave = false;
-		ide.set_source = true;
+		new ContextMenu(".ide-tab", [
+			{
+				name: "Close tab",
+				fn: (elem: HTMLButtonElement) => {
+					const tab: Tab = tabs[elem.innerHTML]!;
+					if (tab.name == "main.c") return;
 
-		ide.setValueSilent(content);
+					tab.close();
+				},
+			},
+			{
+				name: "Rename tab",
+				fn: (elem: HTMLButtonElement) => {
+					const tab: Tab = tabs[elem.innerHTML]!;
+					if (tab.name == "main.c") return;
+					if (tabs[tab.name]) {
+						alert("File already exists!");
+						return;
+					}
 
-		ide.set_source = false;
-		ide.can_autosave = true;
+					tab.rename("foo.c");
+				}
+			}
+		], styling);
+	}
+
+	getSources(): Record<string, string> {
+		return this.sources;
+	}
+
+	getSource(name: string): string {
+		return this.sources[name] || "";
+	}
+
+	setSource(name: string, content: string) {
+		if (this.current.name == name && ide.editor.getValue() != content) {
+			// Be sure to use setValueSilent as to not cause a monaco editor model change feedback loop...
+			ide.setValueSilent(content);
+		}
+	}
+
+	saveSources() {
+		changeSetting("sources", this.sources);
+	}
+
+	saveTabs() {
+		changeSetting("tabs", this.encode());
+	}
+
+	closeTab(name: string) {
+		const tab = this.tabs[name];
+		if (!tab) return;
+
+		tab.close();
+	}
+
+	setTab(name: string): boolean {
+		const tab = this.tabs[name];
+		if (!tab) return false;
+
+		this.current.setSource( ide.editor.getValue() );
+		this.saveSources();
+
+		this.current = tab;
+
+		let src = this.getSource(name);
+		if (!src) {
+			src = "// File " + name;
+			this.setSource(name, src);
+		}
+
+		ide.setValueSilent(src);
+
+		return true;
+	}
+
+	addTab(name: string): Tab {
+		// Make sure a tab with that name doesn't already exist.
+		if (this.tabs[name]) return this.tabs[name];
+
+		const tab_elem = document.createElement("button");
+		tab_elem.type = "button";
+		tab_elem.innerHTML = name;
+		tab_elem.className = "ide-tab";
+		tab_elem.onclick = () => this.setTab(name);
+
+		const tab = new Tab(name, tab_elem);
+		this.tabs[name] = tab;
+		this.saveTabs();
+
+		// Make sure the tab doesn't go after the + button.
+		ide_tabs.insertBefore(tab.elem, ide_tabs.childNodes[ ide_tabs.childElementCount ] );
+
+		return tab;
+	}
+
+	encode(): string {
+		return JSON.stringify( this.tabs );
 	}
 }
 
-class Tab {
+export class Tab {
 	elem: HTMLButtonElement;
 	name: string;
 
@@ -50,98 +158,33 @@ class Tab {
 		this.elem = elem;
 		this.name = name;
 	}
-}
 
-export function setTab(name: string) {
-	const tab = tabs[name];
-	if (!tab) { return false }
-
-	setSource( current_file, ide.editor.getValue() );
-	saveSources();
-
-	current_file = name;
-
-	let src = getSource(name);
-	if (!src) {
-		src = "// File " + name;
-		setSource(name, src);
+	close() {
+		ide_tabs.removeChild(this.elem);
+		delete ide.tab_handler.tabs[this.name];
+		ide.tab_handler.saveTabs();
 	}
 
-	ide.setValueSilent(src);
+	rename(name: string) {
+		ide.tab_handler.tabs[name] = ide.tab_handler.tabs[this.name];
 
-	return true;
-}
+		// Delete the actual tab object but not the HTML object.
+		delete ide.tab_handler.tabs[this.name];
+		ide.tab_handler.saveTabs();
 
-// Remove tab and shift others id's down
-export function closeTab(name: string) {
-	const toremove = tabs[name];
-	if (toremove) {
-		ide_tabs.removeChild(toremove.elem);
-		delete tabs[name];
-		changeSetting("tabs", tabs);
-	}
-}
+		ide.tab_handler.setSource(name, ide.tab_handler.getSource(this.name));
+		delete ide.tab_handler.sources[this.name];
 
-export function addTab(name: string) {
-	// Make sure a tab with that name doesn't already exist.
-	if (tabs[name]) return;
+		ide.tab_handler.saveSources();
 
-	const tab = document.createElement("button");
-	tab.type = "button";
-	tab.innerHTML = name;
-	tab.className = "ide-tab";
-	tab.onclick = function() {
-		setTab(name);
-	};
-
-	tabs[name] = new Tab(name, tab);
-	changeSetting("tabs", tabs);
-
-	// Make sure the tab doesn't go after the + button.
-	ide_tabs.insertBefore( tab, ide_tabs.childNodes[ ide_tabs.childElementCount ] );
-}
-
-export function setupTabs() {
-	let tabs = getSetting("tabs");
-
-	if (tabs && tabs["main.c"]) {
-		for (let name in tabs) {
-			addTab(name);
-		}
-	} else {
-		addTab("main.c");
+		this.elem.innerHTML = name;
 	}
 
-	let count = 0;
-	const tab_add = document.getElementById("btn_add_tab") as HTMLButtonElement;
-	tab_add.onclick = function() {
-		// Find next available name slot
-		let name;
-		do {
-			name = `file${count}.c`;
-			count++;
-		} while( tabs[name] )
-		addTab(name);
+	setSource(src: string) {
+		ide.tab_handler.setSource(this.name, src);
 	}
 
-	tab_add.oncontextmenu = function(e) {
-		e.preventDefault();
+	getSource() {
+		return ide.tab_handler.getSource(this.name);
 	}
-
-	const styling = {
-		className: "contextmenu",
-		minimalStyling: true
-	};
-
-	new ContextMenu(".ide-tab", [
-		{
-			name: "Close tab",
-			fn: (elem: HTMLButtonElement) => {
-				if (elem.innerHTML == "main.c") return;
-
-				//const tab = tabs[elem.innerHTML];
-				closeTab(elem.innerHTML);
-			},
-		}
-	], styling);
 }
