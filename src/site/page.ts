@@ -3,6 +3,8 @@
 */
 import { getSetting } from "./config";
 
+export const div_container = document.getElementById("container") as HTMLDivElement;
+
 // Controls
 export const btn_send = document.getElementById("btn_send") as HTMLButtonElement;
 export const btn_clear = document.getElementById("btn_clear") as HTMLButtonElement;

@@ -5,40 +5,26 @@ import { ide } from "../index";
 // @ts-ignore
 import ContextMenu from "@mturco/context-menu";
 
-export let tabs: Record<string, Tab> = {};
+export const tabs: Record<string, Tab> = {};
 
 export let current_file: string = "main.c";
-export let sources: Record<string, string>;
+
+// Backwards compatibility for when the IDE was just a single file.
+export const sources: Record<string, string> = getSetting("sources") || {
+	["main.c"]: getSetting("code")
+};
 
 // Have to check if it exists or not because of JS / TS importing in the wrong order....
 export function getSources(): Record<string, string> {
-	if (!sources) {
-		sources = getSetting("sources") || {};
-	}
 	return sources;
 }
 
 export function saveSources() {
-	changeSetting("sources", getSources());
+	changeSetting("sources", sources);
 }
 
-// Backwards compatibility for when the IDE was just a single file.
-let main;
-if (sources) {
-	if (!sources["main.c"]) {
-		main = getSetting("code");
-		sources["main.c"] = main;
-	}
-} else {
-	sources = getSetting("sources");
-
-	if (!sources) {
-		sources = { ["main.c"]: getSetting("code") };
-	}
-}
-
-export function getSource(source: string) {
-	return getSources()[source] || "";
+export function getSource(source: string): string {
+	return sources[source] || "";
 }
 
 export function setSource(source: string, content: string) {
@@ -62,11 +48,12 @@ class Tab {
 
 	constructor(name: string, elem: HTMLButtonElement) {
 		this.elem = elem;
+		this.name = name;
 	}
 }
 
 export function setTab(name: string) {
-	let tab = tabs[name];
+	const tab = tabs[name];
 	if (!tab) { return false }
 
 	setSource( current_file, ide.editor.getValue() );
@@ -87,7 +74,7 @@ export function setTab(name: string) {
 
 // Remove tab and shift others id's down
 export function closeTab(name: string) {
-	let toremove = tabs[name];
+	const toremove = tabs[name];
 	if (toremove) {
 		ide_tabs.removeChild(toremove.elem);
 		delete tabs[name];

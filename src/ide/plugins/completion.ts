@@ -168,8 +168,8 @@ export function loadStandardLibraries() {
 }
 
 const CPPCompletionProvider = {
-	provideCompletionItems: function (model: monaco.editor.IReadOnlyModel, position: monaco.Position): monaco.languages.CompletionList {
-		if (!in_intellisense.checked) { return null; }
+	provideCompletionItems: function (model: monaco.editor.IReadOnlyModel, position: monaco.Position): monaco.languages.CompletionList | undefined {
+		if (!in_intellisense.checked) { return; }
 
 		const textUntilPosition = model.getValueInRange({
 			startLineNumber: 1,
@@ -181,8 +181,7 @@ const CPPCompletionProvider = {
 		const match = textUntilPosition.match(/(\w+)\(/);
 
 		if (!match) {
-			// @ts-ignore
-			return { suggestions: [] };
+			return;
 		}
 
 		const word = model.getWordUntilPosition(position);

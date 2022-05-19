@@ -37,7 +37,7 @@ export const COMPILE_TYPING_TIMEOUT = 900;
 // Milliseconds in between each attempt to connect to the BlocklyPropLauncher.
 export const LAUNCHER_CONNECT_COOLDOWN = 3000;
 
-const DEFAULT_SETTINGS = {
+const DEFAULT_SETTINGS: Record<string, any> = {
 	theme: "vs-dark",
 
 	code: DEFAULT_CODE,
@@ -49,40 +49,43 @@ const DEFAULT_SETTINGS = {
 	selectedIndex: 0, // EEPROM (Saved) By default
 };
 
-export let USER_SETTINGS = JSON.parse(localStorage.getItem("propc_settings"));
+export let USER_SETTINGS: Record<string, any> = DEFAULT_SETTINGS;
 
-if (!USER_SETTINGS) {
-	USER_SETTINGS = DEFAULT_SETTINGS;
-} else {
-	// If there are any missing settings, get them from default
-	for (const key in DEFAULT_SETTINGS) {
-		if (!USER_SETTINGS[key]) {
-			// @ts-ignore
-			USER_SETTINGS[key] = DEFAULT_SETTINGS[key];
+const propc_settings = localStorage.getItem("propc_settings");
+if (propc_settings) {
+	try {
+		USER_SETTINGS = JSON.parse(propc_settings);
+
+		// If there are any missing settings, get them from default
+		for (const key in DEFAULT_SETTINGS) {
+			if (!USER_SETTINGS[key]) {
+				USER_SETTINGS[key] = DEFAULT_SETTINGS[key];
+			}
 		}
-	}
+	} catch (e) {}
 }
 
-let settings_changed = false;
+let autosave_interval: number|null = null;
 export function changeSetting(name: string, value: any) {
 	USER_SETTINGS[name] = value;
-	settings_changed = true;
+
+	if (!autosave_interval) {
+		autosave_interval = setTimeout(saveSettings, 1000);
+	}
 }
 
 export function getSetting(name: string) {
 	return USER_SETTINGS[name];
 }
 
-setInterval(function() {
-	if (settings_changed) {
-		console.log(`Saving settings to localStorage.`);
+function saveSettings() {
+	console.log(`Saving settings to localStorage.`);
 
-		// Just in case json stringify fails..
-		const json = JSON.stringify(USER_SETTINGS);
-		if (json) {
-			localStorage.setItem("propc_settings", JSON.stringify(USER_SETTINGS));
-		}
-
-		settings_changed = false;
+	// Just in case json stringify fails..
+	const json = JSON.stringify(USER_SETTINGS);
+	if (json) {
+		localStorage.setItem("propc_settings", JSON.stringify(USER_SETTINGS));
 	}
-}, 500)
+
+	autosave_interval = null;
+}

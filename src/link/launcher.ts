@@ -107,8 +107,6 @@ export class LauncherConnection {
 
 			connection.onopen = function(evt) {
 				self.active = connection;
-				// @ts-ignore
-				console.log(`Connection is: ${evt.type}, URL: ${evt.target.url}.`);
 
 				// @ts-ignore
 				const payload: LauncherSend = {
@@ -211,7 +209,7 @@ export class LauncherConnection {
 
 		if (this.active) {
 			this.requesting_ports = true;
-			this.active.send(  JSON.stringify(payload) );
+			this.active.send( JSON.stringify(payload) );
 		}
 	}
 
