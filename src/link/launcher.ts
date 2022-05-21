@@ -1,6 +1,8 @@
 import { sl_ports, ta_compile_out, in_baudrate } from "../site/page";
 import { LAUNCHER_CONNECT_COOLDOWN } from "../site/config";
 import { Console } from "../ide/console";
+import { ide } from "..";
+import { parseCommandLine } from "typescript";
 
 enum WSAction {
 	Hello = "hello-client",
@@ -133,7 +135,8 @@ export class LauncherConnection {
 			connection.onclose = function(evt: CloseEvent) {
 				if (evt.reason) {
 					console.log(`Socket closed with reason: '${evt.reason}' [${evt.code}] Reconnecting in ${ LAUNCHER_CONNECT_COOLDOWN / 1000 } seconds..`);
-				} else {
+				} else if (evt.code != 1006) {
+					// Ignore Abnormal Closure since that's usually because the launcher is not open.
 					const reason = ErrorMessages[evt.code] || "Unknown reason";
 					const msg = `Socket closed: '${reason}' [${evt.code}] Reconnecting in ${ LAUNCHER_CONNECT_COOLDOWN / 1000 } seconds..`;
 
@@ -152,13 +155,13 @@ export class LauncherConnection {
 	onMsg(msg: LauncherRecv) {
 		switch (msg.type) {
 			case WSAction.Hello:
-				console.log(`BlocklyPropLauncher v${msg.version} detected!`);
+				Console.writeln(`BlocklyPropLauncher v${msg.version} detected!`);
 				break;
 			case WSAction.Port:
 				if (this.requesting_ports) {
 					sl_ports.options.length = 0;
 					this.ports = msg.ports.filter( x => x.trim().length > 0 );
-					for (let k in this.ports) {
+					for (const k in this.ports) {
 						const port = this.ports[k];
 						sl_ports.options[sl_ports.length] = new Option(port, port);
 					}
@@ -172,12 +175,12 @@ export class LauncherConnection {
 					messageText = atob(msg.msg);
 				} catch (error) {
 					// only show the error if it's something other than base-64 encoding
-					if (error.toString().indexOf('\'atob\'') < 0) {
+					if ((<DOMException>error).toString().indexOf("'atob'") < 0) {
 						console.error(error);
 					}
 					messageText = msg.msg;
 				}
-				Console.write( messageText.replace('\r', '\n') );
+				Console.process(messageText);
 				break;
 			case WSAction.UiCommand:
 				switch (msg.action) {
@@ -215,10 +218,10 @@ export class LauncherConnection {
 
 	downloadCode(binary: string, extension: string, ty: DownloadType) {
 		const payload = {
-			type: 'load-prop',
+			type: "load-prop",
 			action: ty,
 			portPath: sl_ports.options[sl_ports.selectedIndex].value,
-			debug: 'term',
+			debug: "term",
 			extension: extension,
 			payload: binary,
 		};
