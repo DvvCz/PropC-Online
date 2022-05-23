@@ -19,31 +19,31 @@ export class Console {
 		this.element = div;
 	}
 
-	clear() {
+	static clear() {
 		element.scrollTop = 0;
 		element.innerHTML = "";
 	}
 
-	write(msg: string) {
+	static write(msg: string) {
 		element.scrollTop = element.scrollHeight;
 		element.innerHTML += escapeHTML(msg);
 	}
 
-	writeln(msg: string) {
+	static writeln(msg: string) {
 		this.write(msg + "\n");
 	}
 
-	warn(msg: string) {
+	static warn(msg: string) {
 		this.writeln(`⚠️: ${msg}`);
 		console.warn(msg);
 	}
 
-	error(msg: string) {
+	static error(msg: string) {
 		this.writeln(`❌: ${msg}`);
 		console.error(msg);
 	}
 
-	image(url: string) {
+	static image(url: string) {
 		const img = document.createElement("img");
 		img.src = url;
 		img.alt = url;
@@ -93,4 +93,4 @@ export class Terminal extends Console {
 	}
 }
 
-Terminal.write("test");
+Terminal.writeln("Test");
