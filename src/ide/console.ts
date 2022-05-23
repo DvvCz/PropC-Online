@@ -12,8 +12,8 @@ function escapeHTML(str: string) {
 		.replaceAll(/'/g, "&#039;");
 }
 
-class Window {
-	element: HTMLDivElement;
+export class Console {
+	static element: HTMLDivElement = div_console;
 
 	constructor(div: HTMLDivElement) {
 		this.element = div;
@@ -53,9 +53,13 @@ class Window {
 
 		element.appendChild(img);
 	}
+}
+
+export class Terminal extends Console {
+	static element: HTMLDivElement = div_problems;
 
 	/// Process incoming messages from the BlocklyPropLauncher
-	process(command: string) {
+	static process(command: string) {
 		/// First look for commands formatted in html/xml format.
 		/// E.g. <tts>message</tts>
 		/// Then remove them / replace with whatever value they'd return.
@@ -81,13 +85,12 @@ class Window {
 					return substr;
 			}
 		});
-
+	
 		console.log(command);
-
+	
 		/// Then print out the rest of the message
 		this.write( command.replace('\r', '\n') );
 	}
 }
 
-export const Terminal = new Window(div_console);
-export const Console = new Window(div_problems);
+Terminal.write("test");
