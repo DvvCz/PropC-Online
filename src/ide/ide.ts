@@ -17,7 +17,7 @@ import { CompletionPlugin } from './plugins/completion';
 import { setupTabs } from './tabhandler';
 import { tryCompile } from './source';
 import { startConnecting } from '../link/launcher';
-import { Terminal } from './console';
+import { Console } from './console';
 
 export class IDE {
 	public editor: monaco.editor.IStandaloneCodeEditor;
