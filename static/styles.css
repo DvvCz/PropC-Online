@@ -74,13 +74,12 @@ div.editor {
 }
 
 div.console, div.terminal {
-	box-sizing: border-box;
+	/*box-sizing: border-box;
 	white-space: pre;
 	overflow-y: scroll;
 
-	/*width: 50%;
+	width: 50%;
 	height: 15%;
-	*/
 
 	box-sizing: border-box;
 	color: white;
@@ -92,6 +91,7 @@ div.console, div.terminal {
 	border: none;
 	resize: none;
 	user-select: none;
+	*/
 }
 
 .contextmenu {
