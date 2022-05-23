@@ -12,7 +12,7 @@ function escapeHTML(str: string) {
 		.replaceAll(/'/g, "&#039;");
 }
 
-class Console {
+class Window {
 	element: HTMLDivElement;
 
 	constructor(div: HTMLDivElement) {
@@ -71,13 +71,13 @@ class Console {
 					return new Date().toLocaleTimeString();
 				case "image": /// Embed an image
 				case "img":
-					Console.image(value);
+					this.image(value);
 					return "";
 				case "clear":
-					Console.clear();
+					this.clear();
 					return "";
 				default:
-					Console.error(`Unknown terminal command: ${name}`)
+					this.error(`Unknown terminal command: ${name}`)
 					return substr;
 			}
 		});
@@ -89,5 +89,5 @@ class Console {
 	}
 }
 
-export const Terminal = new Console(div_console);
-export const Console = new Console(div_problems);
+export const Terminal = new Window(div_console);
+export const Console = new Window(div_problems);
