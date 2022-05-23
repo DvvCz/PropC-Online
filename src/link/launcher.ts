@@ -1,6 +1,6 @@
 import { sl_ports, ta_compile_out, in_baudrate } from "../site/page";
 import { LAUNCHER_CONNECT_COOLDOWN } from "../site/config";
-import { Console } from "../ide/console";
+import { Console, Terminal } from "../ide/console";
 import { ide } from "..";
 import { parseCommandLine } from "typescript";
 
@@ -180,7 +180,7 @@ export class LauncherConnection {
 					}
 					messageText = msg.msg;
 				}
-				Console.process(messageText);
+				Terminal.process(messageText);
 				break;
 			case WSAction.UiCommand:
 				switch (msg.action) {

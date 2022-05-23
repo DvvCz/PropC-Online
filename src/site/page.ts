@@ -33,4 +33,4 @@ in_intellisense.checked = getSetting("intellisense");
 sl_theme.value = getSetting("theme");
 in_baudrate.value = getSetting("baudrate");
 
-document.getElementById("title")!.innerHTML = `PropC Online 1.6.0b2`;
+document.getElementById("title")!.innerHTML = `PropC Online 1.6.0b3`;
