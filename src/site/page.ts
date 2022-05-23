@@ -26,7 +26,8 @@ export const in_intellisense = document.getElementById("in_intellisense") as HTM
 export const ide_tabs = document.getElementById("ide-tabs") as HTMLDivElement;
 // 			<textarea id="compile-out" cols="218" rows="10" readonly></textarea>
 
-export const div_console = document.getElementById("div_console") as HTMLTextAreaElement;
+export const div_console = document.getElementById("div_console") as HTMLDivElement;
+export const div_problems = document.getElementById("div_problems") as HTMLDivElement;
 
 in_intellisense.checked = getSetting("intellisense");
 sl_theme.value = getSetting("theme");

@@ -1,4 +1,5 @@
 import { div_console } from "../site/page";
+import * as util from "../util";
 
 const COMMAND_REGEX = /<(\w+)>([^<]+)<\/\1>/g;
 
@@ -11,32 +12,38 @@ function escapeHTML(str: string) {
 		.replaceAll(/'/g, "&#039;");
 }
 
-export class Console {
-	static clear() {
-		div_console.scrollTop = 0;
-		div_console.innerHTML = "";
+class Console {
+	element: HTMLDivElement;
+
+	constructor(div: HTMLDivElement) {
+		this.element = div;
 	}
 
-	static write(msg: string) {
-		div_console.scrollTop = div_console.scrollHeight;
-		div_console.innerHTML += escapeHTML(msg);
+	clear() {
+		element.scrollTop = 0;
+		element.innerHTML = "";
 	}
 
-	static writeln(msg: string) {
+	write(msg: string) {
+		element.scrollTop = element.scrollHeight;
+		element.innerHTML += escapeHTML(msg);
+	}
+
+	writeln(msg: string) {
 		this.write(msg + "\n");
 	}
 
-	static warn(msg: string) {
+	warn(msg: string) {
 		this.writeln(`⚠️: ${msg}`);
 		console.warn(msg);
 	}
 
-	static error(msg: string) {
+	error(msg: string) {
 		this.writeln(`❌: ${msg}`);
 		console.error(msg);
 	}
 
-	static image(url: string) {
+	image(url: string) {
 		const img = document.createElement("img");
 		img.src = url;
 		img.alt = url;
@@ -44,11 +51,11 @@ export class Console {
 		img.width = 50;
 		img.height = 50;
 
-		div_console.appendChild(img);
+		element.appendChild(img);
 	}
 
 	/// Process incoming messages from the BlocklyPropLauncher
-	static process(command: string) {
+	process(command: string) {
 		/// First look for commands formatted in html/xml format.
 		/// E.g. <tts>message</tts>
 		/// Then remove them / replace with whatever value they'd return.
@@ -81,3 +88,6 @@ export class Console {
 		this.write( command.replace('\r', '\n') );
 	}
 }
+
+export const Terminal = new Console(div_console);
+export const Console = new Console(div_problems);
