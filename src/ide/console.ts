@@ -1,4 +1,4 @@
-import { div_console } from "../site/page";
+import { div_console, div_terminal } from "../site/page";
 import * as util from "../util";
 
 const COMMAND_REGEX = /<(\w+)>([^<]+)<\/\1>/g;
@@ -52,7 +52,7 @@ export class Console {
 }
 
 export class Terminal extends Console {
-	static element: HTMLDivElement = div_problems;
+	static element: HTMLDivElement = div_terminal;
 
 	/// Process incoming messages from the BlocklyPropLauncher
 	static process(command: string) {
