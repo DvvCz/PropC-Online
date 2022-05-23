@@ -15,18 +15,14 @@ function escapeHTML(str: string) {
 export class Console {
 	static element: HTMLDivElement = div_console;
 
-	constructor(div: HTMLDivElement) {
-		this.element = div;
-	}
-
 	static clear() {
-		element.scrollTop = 0;
-		element.innerHTML = "";
+		this.element.scrollTop = 0;
+		this.element.innerHTML = "";
 	}
 
 	static write(msg: string) {
-		element.scrollTop = element.scrollHeight;
-		element.innerHTML += escapeHTML(msg);
+		this.element.scrollTop = element.scrollHeight;
+		this.element.innerHTML += escapeHTML(msg);
 	}
 
 	static writeln(msg: string) {
@@ -51,7 +47,7 @@ export class Console {
 		img.width = 50;
 		img.height = 50;
 
-		element.appendChild(img);
+		this.element.appendChild(img);
 	}
 }
 
