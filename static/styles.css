@@ -78,7 +78,7 @@ div.console {
 	white-space: pre;
 	overflow-y: scroll;
 
-	width: 100%;
+	width: 50%;
 	height: 15%;
 
 	box-sizing: border-box;
@@ -93,21 +93,24 @@ div.console {
 	user-select: none;
 }
 
-div.console textarea {
+div.terminal {
+	box-sizing: border-box;
+	white-space: pre;
+	overflow-y: scroll;
+
+	width: 50%;
+	height: 15%;
+
 	box-sizing: border-box;
 	color: white;
+	font-family: 'Courier New', Courier, monospace;
 	background-color: rgb(54, 54, 54);
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, monospace;
-
 	box-shadow: none;
 	outline: none;
 
 	border: none;
 	resize: none;
 	user-select: none;
-
-	height: 100%;
-	width: 100%;
 }
 
 .contextmenu {

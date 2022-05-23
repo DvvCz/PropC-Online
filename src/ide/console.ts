@@ -1,5 +1,4 @@
 import { div_console, div_terminal } from "../site/page";
-import * as util from "../util";
 
 const COMMAND_REGEX = /<(\w+)>([^<]+)<\/\1>/g;
 
