@@ -73,33 +73,14 @@ div.editor {
 	height: 70%;
 }
 
-div.console {
+div.console, div.terminal {
 	box-sizing: border-box;
 	white-space: pre;
 	overflow-y: scroll;
 
-	width: 50%;
+	/*width: 50%;
 	height: 15%;
-
-	box-sizing: border-box;
-	color: white;
-	font-family: 'Courier New', Courier, monospace;
-	background-color: rgb(54, 54, 54);
-	box-shadow: none;
-	outline: none;
-
-	border: none;
-	resize: none;
-	user-select: none;
-}
-
-div.terminal {
-	box-sizing: border-box;
-	white-space: pre;
-	overflow-y: scroll;
-
-	width: 50%;
-	height: 15%;
+	*/
 
 	box-sizing: border-box;
 	color: white;
