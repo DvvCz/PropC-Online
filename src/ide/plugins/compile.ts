@@ -11,7 +11,7 @@ import { getCompileResults } from "../inspector";
 import { tryCompile } from "../source";
 import { ide } from "../..";
 
-let current_timeout: number;
+let current_timeout: number | null;
 function onContentChanged(editor: monaco.editor.IStandaloneCodeEditor) {
 	if (ide.set_source) { return }
 

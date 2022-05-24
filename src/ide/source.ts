@@ -6,8 +6,8 @@ import { getSource } from '../ide/tabhandler';
 import * as util from '../util';
 
 interface CurrentCompile {
-	response?: Promise<BlocklyPropResponse>,
-	timeout?: number,
+	response: Promise<BlocklyPropResponse> | null,
+	timeout: number | null,
 	in_progress: boolean,
 
 	code_hash: number,
@@ -65,9 +65,7 @@ ${ getPreprocessed(filename, included) }
 	});
 }
 
-export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResponse) => void) {
-	ready = ready || function() {};
-
+export function tryCompile(ready: (http_success: boolean, resp: BlocklyPropResponse) => void = function() {}) {
 	const code = getPreprocessed("main.c");
 
 	if (current_compile.in_progress) {

@@ -20,7 +20,7 @@ export class Console {
 	}
 
 	static write(msg: string) {
-		this.element.scrollTop = element.scrollHeight;
+		this.element.scrollTop = this.element.scrollHeight;
 		this.element.innerHTML += escapeHTML(msg);
 	}
 

@@ -1,4 +1,4 @@
-import { sl_ports, ta_compile_out, in_baudrate } from "../site/page";
+import { sl_ports, in_baudrate } from "../site/page";
 import { LAUNCHER_CONNECT_COOLDOWN } from "../site/config";
 import { Console, Terminal } from "../ide/console";
 import { ide } from "..";
