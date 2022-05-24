@@ -60,7 +60,7 @@ export class Terminal extends Console {
 		/// Then remove them / replace with whatever value they'd return.
 		/// You'd use this for values you don't have in the robot or for things you can't do (well), like TTS.
 		/// This pretty much extends functionality of propeller C just by using print().
-		command = command.replaceAll(COMMAND_REGEX, function(substr, name, value) {
+		command = command.replaceAll(COMMAND_REGEX, (substr, name, value) => {
 			switch (name) {
 				case "tts":
 					const msg = new SpeechSynthesisUtterance(value);

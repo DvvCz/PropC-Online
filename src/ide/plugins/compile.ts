@@ -19,11 +19,11 @@ function onContentChanged(editor: monaco.editor.IStandaloneCodeEditor) {
 		// Cancel old timeout, user is typing again.
 		clearTimeout(current_timeout);
 	}
-	current_timeout = setTimeout(function() {
+	current_timeout = setTimeout(() => {
 		// Autosave even if it didn't compile correctly.
 		ide.save();
 
-		tryCompile(function(http_success, resp) {
+		tryCompile((http_success, resp) => {
 			if (http_success) {
 				if (!resp.success) {
 					// Extract warnings / errors to display in editor
@@ -52,8 +52,6 @@ function onContentChanged(editor: monaco.editor.IStandaloneCodeEditor) {
 
 export class CompilePlugin implements IDEPlugin {
 	static load(editor: monaco.editor.IStandaloneCodeEditor) {
-		editor.onDidChangeModelContent(function() {
-			onContentChanged(editor);
-		});
+		editor.onDidChangeModelContent( () => onContentChanged(editor) );
 	}
 }

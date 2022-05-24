@@ -14,8 +14,8 @@ export class ControlPlugin implements IDEPlugin {
 		btn_clear.addEventListener("click", Console.clear);
 
 		// 'Send to Robot' button
-		btn_send.addEventListener("click", function(evt) {
-			tryCompile(function(http_success, resp) {
+		btn_send.addEventListener("click", (evt) => {
+			tryCompile((http_success, resp) => {
 				if (http_success && resp.success) {
 					if (connection) {
 						const selected = sl_type.options[sl_type.selectedIndex];
@@ -30,8 +30,8 @@ export class ControlPlugin implements IDEPlugin {
 		});
 
 		// 'Download Binary' button
-		btn_download_bin.addEventListener("click", function(evt) {
-			tryCompile(function(http_success, resp) {
+		btn_download_bin.addEventListener("click", (evt) => {
+			tryCompile((http_success, resp) => {
 				if (http_success && resp.success) {
 					let blob = new Blob([resp.binary], {type: "application/octet-stream"});
 					FileSaver.saveAs(blob, `propc${resp.extension}`);

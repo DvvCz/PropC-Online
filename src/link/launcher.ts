@@ -54,7 +54,7 @@ export let connection: LauncherConnection;
 
 export function startConnecting() {
 	stopConnecting();
-	interval_id = setInterval(function() {
+	interval_id = setInterval(() => {
 		try {
 			let ctx = new LauncherConnection();
 			ctx.connect()
@@ -105,10 +105,9 @@ export class LauncherConnection {
 	async connect(): Promise<WebSocket> {
 		return new Promise((resolve, reject) => {
 			const connection = new WebSocket("ws://localhost:6009");
-			const self = this; // Bad, horrible
 
-			connection.onopen = function(evt) {
-				self.active = connection;
+			connection.onopen = (evt) => {
+				this.active = connection;
 
 				// @ts-ignore
 				const payload: LauncherSend = {
@@ -121,18 +120,18 @@ export class LauncherConnection {
 				resolve(connection);
 			};
 
-			connection.onerror = function(error) {
+			connection.onerror = (error) => {
 				console.error(`WebSocket error: ${error.toString()}`);
 
-				self.close();
+				this.close();
 			};
 
-			connection.onmessage = function(evt) {
+			connection.onmessage = (evt) => {
 				const msg: LauncherRecv = JSON.parse(evt.data);
-				self.onMsg(msg);
+				this.onMsg(msg);
 			};
 
-			connection.onclose = function(evt: CloseEvent) {
+			connection.onclose = (evt: CloseEvent) => {
 				if (evt.reason) {
 					console.log(`Socket closed with reason: '${evt.reason}' [${evt.code}] Reconnecting in ${ LAUNCHER_CONNECT_COOLDOWN / 1000 } seconds..`);
 				} else if (evt.code != 1006) {

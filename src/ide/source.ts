@@ -54,7 +54,7 @@ function getPreprocessed(mainfile: string, included: Record<string, boolean> = {
 
 	const lines = getIncludeLines(code);
 
-	return code.replaceAll(INCLUDE_RGX, function(substr, filename) {
+	return code.replaceAll(INCLUDE_RGX, (substr, filename) => {
 		// Already included, ignore.
 		if (included[filename]) return "";
 		if (!getSource(filename)) return substr; // File not found, regular C include?
@@ -73,7 +73,7 @@ export function tryCompile(ready?: (http_success: boolean, resp: BlocklyPropResp
 	if (current_compile.in_progress) {
 		Console.writeln("❌ Already compiling!");
 
-		current_compile.timeout = setTimeout(function() {
+		current_compile.timeout = setTimeout(() => {
 			// Just in case the compile is never heard from.
 			current_compile.in_progress = false;
 			current_compile.timeout = null;

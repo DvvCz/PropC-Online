@@ -6,7 +6,7 @@ import { sl_theme } from '../../site/page';
 
 export class ThemePlugin implements IDEPlugin {
 	static load(editor: monaco.editor.IStandaloneCodeEditor) {
-		sl_theme.addEventListener("change", function(evt: Event) {
+		sl_theme.addEventListener("change", (evt: Event) => {
 			const theme = sl_theme.value;
 
 			monaco.editor.setTheme(theme);

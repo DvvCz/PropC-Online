@@ -95,11 +95,11 @@ function onImportClicked() {
 
 export class GithubPlugin implements IDEPlugin {
 	static load(editor: monaco.editor.IStandaloneCodeEditor) {
-		btn_import_open.addEventListener("click", function(evt) {
+		btn_import_open.addEventListener("click", (evt) => {
 			div_popup.style.visibility = "visible";
 		});
 
-		btn_import_cancel.addEventListener("click", function(evt) {
+		btn_import_cancel.addEventListener("click", (evt) => {
 			div_popup.style.visibility = "hidden";
 		});
 

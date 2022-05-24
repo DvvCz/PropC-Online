@@ -90,9 +90,7 @@ export function addTab(name: string) {
 	tab.type = "button";
 	tab.innerHTML = name;
 	tab.className = "ide-tab";
-	tab.onclick = function() {
-		setTab(name);
-	};
+	tab.onclick = () => setTab(name);
 
 	tabs[name] = new Tab(name, tab);
 	changeSetting("tabs", tabs);
@@ -114,7 +112,7 @@ export function setupTabs() {
 
 	let count = 0;
 	const tab_add = document.getElementById("btn_add_tab") as HTMLButtonElement;
-	tab_add.onclick = function() {
+	tab_add.onclick = () => {
 		// Find next available name slot
 		let name;
 		do {
@@ -124,9 +122,7 @@ export function setupTabs() {
 		addTab(name);
 	}
 
-	tab_add.oncontextmenu = function(e) {
-		e.preventDefault();
-	}
+	tab_add.oncontextmenu = (e) => e.preventDefault();
 
 	const styling = {
 		className: "contextmenu",

@@ -7,7 +7,7 @@ import { loadStandardLibraries } from "./completion";
 
 export class ConfigPlugin implements IDEPlugin {
 	static load(editor: monaco.editor.IStandaloneCodeEditor) {
-		in_intellisense.addEventListener("click", function(evt) {
+		in_intellisense.addEventListener("click", (evt) => {
 			if (in_intellisense.checked) {
 				// Try and get functions from simpletools.h
 				loadStandardLibraries();
@@ -16,7 +16,7 @@ export class ConfigPlugin implements IDEPlugin {
 		});
 
 		sl_type.selectedIndex = getSetting("download_type") as number;
-		sl_type.addEventListener("change", function(evt) {
+		sl_type.addEventListener("change", (evt) => {
 			changeSetting("download_type", sl_type.selectedIndex);
 		});
 	}
