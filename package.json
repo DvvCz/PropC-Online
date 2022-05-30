@@ -1,6 +1,6 @@
 {
 	"name": "propc-online",
-	"version": "1.6.0b3",
+	"version": "1.6.0",
 	"description": "A PropC IDE for the browser!",
 	"main": "index.js",
 	"scripts": {

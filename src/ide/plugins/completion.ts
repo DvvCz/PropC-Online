@@ -12,7 +12,7 @@ const FUNC_RGX = /((?:extern|inline)\s+)?(unsigned\s+)?(fdserial|u?int\d*(?:_t)?
 const VAR_RGX = /(extern\s+)?(unsigned\s+)?(\w+)\s+\*?(\w+);/;
 const LVAR_RGX = /(unsigned\s+)?(\w+)\s+\*?(\w+)\s+=/;
 const DEFINE_RGX = /#define\s+(\w+)\s+(\S+)/;
-const STRUCT_RGX = /struct\s+(\w+)\s*{/;
+const TYPEDEF_RGX = /(struct|union|enum)\s+(\w+)\s*{/;
 
 function createLibObject(name: string, kind: monaco.languages.CompletionItemKind, desc: string): monaco.languages.CompletionItem {
 	return {
@@ -44,32 +44,14 @@ const KEYWORDS: string[] = [
 
 const BASE_DEFINITIONS: monaco.languages.CompletionItem[] = [];
 for (const kw of KEYWORDS) {
-	BASE_DEFINITIONS.push( createLibObject(kw, CompletionItemKind.Keyword, `Keyword: ${kw}`) );
+	BASE_DEFINITIONS.push({
+		label: kw,
+		kind: CompletionItemKind.Snippet,
+		documentation: `Keyword ${kw}`,
+		insertText: kw,
+		range: null
+	});
 }
-
-BASE_DEFINITIONS.push({
-	label: "while",
-	kind: CompletionItemKind.Snippet,
-	documentation: "while loop",
-	insertText: "while (true) {\n\t${0}\n}",
-	range: null
-});
-
-BASE_DEFINITIONS.push({
-	label: "for",
-	kind: CompletionItemKind.Snippet,
-	documentation: "for loop",
-	insertText: "for (int i = 0; i < 10; i++) {\n\t${0}\n}",
-	range: null
-});
-
-BASE_DEFINITIONS.push({
-	label: "if",
-	kind: CompletionItemKind.Snippet,
-	documentation: "if condition",
-	insertText: "if (true) {\n\t${0}\n}",
-	range: null
-});
 
 function getDefinitionsFrom(code: string): monaco.languages.CompletionItem[] {
 	code = code.replace(COMMENT_RGX, "");
@@ -100,7 +82,7 @@ function getDefinitionsFrom(code: string): monaco.languages.CompletionItem[] {
 						const name = vardefs[3];
 						out.push( createLibObject(name, CompletionItemKind.Variable, `Variable Definition: ${name}`) )
 					} else {
-						const struct = line.match(STRUCT_RGX);
+						const struct = line.match(TYPEDEF_RGX);
 						if (struct) {
 							const name = struct[1];
 							out.push( createLibObject(name, CompletionItemKind.Struct, `Struct: ${name}`) )
@@ -130,7 +112,7 @@ function scanHeaderIncludes(code: string, callback: (header: string)=>void) {
 /// Load C++ / C definitions from a raw url to text.
 /// It will do it's best to scan for functions and #defines and throw them at monaco for autocomplete.
 function loadDefinitionsFrom(endpoint: string) {
-	const filename = endpoint.split("/").pop();
+	const filename = endpoint.split("/").pop()!;
 	fetch(endpoint, {
 		method: "GET"
 	})
