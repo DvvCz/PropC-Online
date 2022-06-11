@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor';
+import * as monaco from "monaco-editor";
 import { IDEPlugin } from '../ide';
 
 import { btn_import, btn_import_cancel, btn_import_open, div_popup, in_github_repo } from "../../site/page";

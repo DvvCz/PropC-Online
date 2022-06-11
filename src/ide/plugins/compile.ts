@@ -3,9 +3,8 @@
 */
 
 import * as monaco from "monaco-editor";
+
 import { COMPILE_TYPING_TIMEOUT } from "../../site/config";
-import { Console } from "../../ide/console";
-import { current_file, saveSources, setSource } from "../../ide/tabhandler";
 import { IDEPlugin } from "../ide";
 import { getCompileResults } from "../inspector";
 import { tryCompile } from "../source";

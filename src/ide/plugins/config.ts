@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor';
+import * as monaco from "monaco-editor";
 import { IDEPlugin } from '../ide';
 
 import { changeSetting, getSetting } from "../../site/config";

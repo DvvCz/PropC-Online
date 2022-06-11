@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor';
+import * as monaco from "monaco-editor";
 import { IDEPlugin } from '../ide';
 
 import { getSetting, SIMPLELIBS_REPO } from '../../site/config';

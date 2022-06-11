@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor';
+import * as monaco from "monaco-editor";
 
 import { getSetting } from '../site/config';
 import { current_file, getSource, saveSources, setSource } from './tabhandler';

@@ -1,5 +1,5 @@
 // Bottom row, under the editor
-import * as monaco from 'monaco-editor';
+import * as monaco from "monaco-editor";
 import { IDEPlugin } from '../ide';
 
 import * as FileSaver from "file-saver";
@@ -11,7 +11,7 @@ import { Console } from '../console';
 
 export class ControlPlugin implements IDEPlugin {
 	static load(editor: monaco.editor.IStandaloneCodeEditor) {
-		btn_clear.addEventListener("click", Console.clear);
+		btn_clear.addEventListener("click", () => Console.clear());
 
 		// 'Send to Robot' button
 		btn_send.addEventListener("click", (evt) => {

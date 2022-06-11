@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor';
+import * as monaco from "monaco-editor";
 
 import { compile, BlocklyPropResponse } from '../site/website';
 import { Console } from '../ide/console';

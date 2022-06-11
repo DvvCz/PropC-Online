@@ -14,19 +14,19 @@ Uses [monaco](https://github.com/microsoft/monaco-editor) for the editor, [Block
 * Multiple files to keep your project organized.
 * Automatic compilation as you type
 * Import straight from Github :octocat:
+* Minimal, only really depends on the monaco editor actively developed by microsoft.
 
 ## Previews
 ### Multiple files
 ![multifiles](assets/multifiles.gif)
 
-### Console / Overview
-![console](assets/overview.gif)
-
-### Import from Github
-![github](assets/import.gif)
+### Overview
+![overview](assets/overview.gif)
 
 ## Why?
 
 I created this project in my freetime during high school for use in my Vex Robotics projects. This is because the website provided by parallax to program the robot uses [block programming](https://developers.google.com/blockly) which is clunky and very quickly causes freezes, especially on school laptops. Students can use this as an alternative assuming they have basic knowledge of C programming.
 
-It is MIT licensed for learning and usage convenience.
+It is MIT licensed for your convenience to learn from and use.
+
+> As of June 2022, this project will not be actively developed considering I won't have access to a Parallax processor anymore since I've graduated. I will still try and keep it up to date and accept pull requests and issues.
